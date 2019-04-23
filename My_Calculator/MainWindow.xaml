@@ -10,9 +10,9 @@
         Icon="./Icons/Calculator_Icon.png"
         Background="Black"
         Height="550" 
-        Width="450"
+        Width="500"
         MinHeight="560"
-        MinWidth="350">
+        MinWidth="400">
 
     <Window.Resources>
         <!--! Input Button Border Style -->
@@ -39,7 +39,7 @@
             </Setter>
             <Setter
                 Property="FontSize"
-                Value="20">
+                Value="24">
             </Setter>
             <Setter
                 Property="Foreground"
@@ -71,7 +71,7 @@
             </Setter>
             <Setter
                 Property="FontSize"
-                Value="20">
+                Value="22">
             </Setter>
             <Setter
                 Property="FontWeight"
@@ -144,7 +144,7 @@
                     Background="Transparent"
                     BorderThickness="0"
                     Margin="0 0 20 0"
-                    FontSize="25">
+                    FontSize="25" Click="HamburgerMenuButton_Click">
                     <Image Source="./Icons/Hamburger_Menu_Icon.png" />
                 </Button>
 
@@ -169,7 +169,7 @@
                     Background="Transparent"
                     BorderThickness="0"
                     Margin="20 0 0 0"
-                    FontSize="25">
+                    FontSize="25" Click="HistoryButton_Click">
                     <Image Source="./Icons/History_Icon.png" />
                 </Button>
 
