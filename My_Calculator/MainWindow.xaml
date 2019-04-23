@@ -133,7 +133,7 @@
                     </RowDefinition>
                 </Grid.RowDefinitions>
 
-                
+
                 <Button
                     x:Name="HamburgerMenuButton"
                     Grid.Column="0"
@@ -147,7 +147,7 @@
                     FontSize="25">
                     <Image Source="./Icons/Hamburger_Menu_Icon.png" />
                 </Button>
-                
+
 
                 <TextBlock
                     x:Name="CalcTypeText" 
@@ -158,7 +158,7 @@
                     Text="Standard">
                 </TextBlock>
 
-                
+
                 <Button
                     x:Name="HistoryButton"
                     Grid.Column="2"
@@ -172,17 +172,26 @@
                     FontSize="25">
                     <Image Source="./Icons/History_Icon.png" />
                 </Button>
-                
+
             </Grid>
 
 
             <!-- Output -->
             <StackPanel>
                 <TextBlock
-                    x:Name="OutputText"
-                    Margin="0 20 12 40"
+                    x:Name="TopOutputText"
+                    Margin="0 10 12 0"
+                    FontSize="25"
+                    TextAlignment="Right"
+                    TextWrapping="Wrap"
+                    Text="">
+                </TextBlock>
+                <TextBlock
+                    x:Name="MainOutputText"
+                    Margin="0 0 12 15"
                     FontSize="50"
                     TextAlignment="Right"
+                    TextWrapping="Wrap"
                     Text="0">
                 </TextBlock>
             </StackPanel>
@@ -239,7 +248,7 @@
                         <Button
                             x:Name="PercentButton"
                             Content="%"
-
+                            Click="MathFunctionButton_Click"
                             Style="{StaticResource InputButton}">
                         </Button>
                     </Border>
@@ -252,6 +261,7 @@
                         <Button
                             x:Name="SquareRootButton"
                             Content="√"
+                            Click="MathFunctionButton_Click"
                             Style="{StaticResource InputButton}">
                         </Button>
                     </Border>
@@ -264,6 +274,7 @@
                         <Button
                             x:Name="SquareButton"
                             Content="x²"
+                            Click="MathFunctionButton_Click"
                             Style="{StaticResource InputButton}">
                         </Button>
                     </Border>
@@ -276,6 +287,7 @@
                         <Button
                             x:Name="MultiplicativeInverseButton"
                             Content="¹/ᵪ"
+                            Click="MathFunctionButton_Click"
                             Style="{StaticResource InputButton}">
                         </Button>
                     </Border>
@@ -289,6 +301,7 @@
                         <Button
                             x:Name="ClearEntryButton"
                             Content="CE"
+                            Click="InputControlButton_Click"
                             Style="{StaticResource InputButton}">
                         </Button>
                     </Border>
@@ -301,6 +314,7 @@
                         <Button
                             x:Name="ClearAllButton"
                             Content="C"
+                            Click="InputControlButton_Click"
                             Style="{StaticResource InputButton}">
                         </Button>
                     </Border>
@@ -313,6 +327,7 @@
                         <Button
                             x:Name="BackSpaceButton"
                             Content="←"
+                            Click="InputControlButton_Click"
                             Style="{StaticResource InputButton}"
                             FontSize="24">
                         </Button>
@@ -326,6 +341,7 @@
                         <Button
                             x:Name="DivisionButton"
                             Content="÷"
+                            Click="OperatorButton_Click"
                             Style="{StaticResource InputButton}"
                             FontWeight="DemiBold">
                         </Button>
@@ -341,6 +357,7 @@
                         <Button
                             x:Name="SevenButton"
                             Content="7"
+                            Click="InputNumberButton_Click"
                             Style="{StaticResource InputNumberButton}">
                         </Button>
                     </Border>
@@ -353,6 +370,7 @@
                         <Button
                             x:Name="EightButton"
                             Content="8"
+                            Click="InputNumberButton_Click"
                             Style="{StaticResource InputNumberButton}">
                         </Button>
                     </Border>
@@ -365,6 +383,7 @@
                         <Button
                             x:Name="NineButton"
                             Content="9"
+                            Click="InputNumberButton_Click"
                             Style="{StaticResource InputNumberButton}">
                         </Button>
                     </Border>
@@ -377,6 +396,7 @@
                         <Button
                             x:Name="MultiplyButton"
                             Content="×"
+                            Click="OperatorButton_Click"
                             Style="{StaticResource InputButton}"
                             FontWeight="DemiBold">
                         </Button>
@@ -392,6 +412,7 @@
                         <Button
                             x:Name="FourButton"
                             Content="4"
+                            Click="InputNumberButton_Click"
                             Style="{StaticResource InputNumberButton}">
                         </Button>
                     </Border>
@@ -404,6 +425,7 @@
                         <Button
                             x:Name="FiveButton"
                             Content="5"
+                            Click="InputNumberButton_Click"
                             Style="{StaticResource InputNumberButton}">
                         </Button>
                     </Border>
@@ -416,6 +438,7 @@
                         <Button
                             x:Name="SixButton"
                             Content="6"
+                            Click="InputNumberButton_Click"
                             Style="{StaticResource InputNumberButton}">
                         </Button>
                     </Border>
@@ -428,6 +451,7 @@
                         <Button
                             x:Name="SubtractButton"
                             Content="−"
+                            Click="OperatorButton_Click"
                             Style="{StaticResource InputButton}"
                             FontWeight="DemiBold">
                         </Button>
@@ -443,6 +467,7 @@
                         <Button
                             x:Name="OneButton"
                             Content="1"
+                            Click="InputNumberButton_Click"
                             Style="{StaticResource InputNumberButton}">
                         </Button>
                     </Border>
@@ -455,6 +480,7 @@
                         <Button
                             x:Name="TwoButton"
                             Content="2"
+                            Click="InputNumberButton_Click"
                             Style="{StaticResource InputNumberButton}">
                         </Button>
                     </Border>
@@ -467,6 +493,7 @@
                         <Button
                             x:Name="ThreeButton"
                             Content="3"
+                            Click="InputNumberButton_Click"
                             Style="{StaticResource InputNumberButton}">
                         </Button>
                     </Border>
@@ -479,6 +506,7 @@
                         <Button
                             x:Name="AdditionButton"
                             Content="+"
+                            Click="OperatorButton_Click"
                             Style="{StaticResource InputButton}"
                             FontWeight="DemiBold">
                         </Button>
@@ -494,6 +522,7 @@
                         <Button
                             x:Name="PlusMinusSignButton"
                             Content="±"
+                            Click="OperatorButton_Click"
                             Style="{StaticResource InputButton}"
                             FontWeight="DemiBold">
                         </Button>
@@ -507,6 +536,7 @@
                         <Button
                             x:Name="ZeroButton"
                             Content="0"
+                            Click="InputNumberButton_Click"
                             Style="{StaticResource InputNumberButton}">
                         </Button>
                     </Border>
@@ -519,6 +549,7 @@
                         <Button
                             x:Name="DotButton"
                             Content="."
+                            Click="OperatorButton_Click"
                             Style="{StaticResource InputButton}"
                             FontWeight="ExtraBold">
                         </Button>
@@ -532,6 +563,7 @@
                         <Button
                             x:Name="EqualsButton"
                             Content="="
+                            Click="OperatorButton_Click"
                             Style="{StaticResource InputButton}"
                             FontWeight="DemiBold">
                         </Button>
@@ -542,8 +574,8 @@
 
 
             </StackPanel>
-            
-            
+
+
         </StackPanel>
     </Border>
 </Window>
