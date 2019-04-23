@@ -61,9 +61,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\Enums\InputControlEnum.cs" />
+    <Compile Include="Helpers\Enums\InputNumberEnum.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Enums\MathFunctionEnum.cs" />
+    <Compile Include="Helpers\Enums\OperatorEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
