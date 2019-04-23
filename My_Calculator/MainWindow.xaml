@@ -1,0 +1,549 @@
+﻿<Window x:Class="My_Calculator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:My_Calculator"
+        mc:Ignorable="d"
+        Title="Everett Grassler's Calculator"
+        ShowInTaskbar="True"
+        WindowStartupLocation="CenterScreen"
+        Icon="./Icons/Calculator_Icon.png"
+        Background="Black"
+        Height="550" 
+        Width="450"
+        MinHeight="550"
+        MinWidth="350">
+
+    <Window.Resources>
+        <Style x:Key="InputButtonBorder" TargetType="Border">
+            <Setter
+                Property="Margin"
+                Value="1">
+            </Setter>
+            <Setter
+                Property="BorderBrush"
+                Value="Gray">
+            </Setter>
+            <Setter
+                Property="BorderThickness"
+                Value="1">
+            </Setter>
+        </Style>
+        <Style x:Key="InputButton" TargetType="Button">
+            <Setter
+                Property="Padding"
+                Value="10">
+            </Setter>
+            <Setter
+                Property="FontSize"
+                Value="20">
+            </Setter>
+            <Setter
+                Property="Foreground"
+                Value="Black">
+            </Setter>
+            <Setter
+                Property="Background"
+                Value="DarkGray">
+            </Setter>
+            <Setter
+                Property="Opacity"
+                Value="0.9">
+            </Setter>
+            <Setter
+                Property="BorderBrush"
+                Value="LightGray">
+            </Setter>
+            <Setter
+                Property="BorderThickness"
+                Value="1">
+            </Setter>
+        </Style>
+        <Style x:Key="InputNumberButton" TargetType="Button">
+            <Setter
+                Property="Padding"
+                Value="10">
+            </Setter>
+            <Setter
+                Property="FontSize"
+                Value="20">
+            </Setter>
+            <Setter
+                Property="FontWeight"
+                Value="DemiBold">
+            </Setter>
+            <Setter
+                Property="Foreground"
+                Value="Black">
+            </Setter>
+            <Setter
+                Property="Background"
+                Value="DimGray">
+            </Setter>
+            <Setter
+                Property="Opacity"
+                Value="1">
+            </Setter>
+            <Setter
+                Property="BorderBrush"
+                Value="DarkGray">
+            </Setter>
+            <Setter
+                Property="BorderThickness"
+                Value="2">
+            </Setter>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter
+                Property="Foreground"
+                Value="LightGray">
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border Padding="7.5">
+        <StackPanel>
+
+            <!-- Top Row -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition 
+                        Width="0.5*"
+                        MaxWidth="50">
+                    </ColumnDefinition>
+                    <ColumnDefinition 
+                        Width="3*">
+                    </ColumnDefinition>
+                    <ColumnDefinition 
+                        Width="0.5*"
+                        MaxWidth="55">
+                    </ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition
+                        Height="30"
+                        MaxHeight="30">
+                    </RowDefinition>
+                </Grid.RowDefinitions>
+
+                <!--
+                <Button
+                    x:Name="HamburgerMenuButton"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Height="25"
+                    MinHeight="15"
+                    MinWidth="25"
+                    Foreground="White"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Margin="0 0 20 0"
+                    FontSize="25">
+                    <Image Source="./Icons/Hamburger_Menu_Icon.png" />
+                </Button>
+                -->
+
+                <TextBlock
+                    x:Name="CalcTypeText" 
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    FontSize="20"
+                    FontWeight="DemiBold"
+                    Text="Standard">
+                </TextBlock>
+
+                <!--
+                <Button
+                    x:Name="HistoryButton"
+                    Grid.Column="2"
+                    Grid.Row="0"
+                    Height="30"
+                    MinHeight="30"
+                    MinWidth="30"
+                    Foreground="White"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Margin="0 0 0 0"
+                    FontSize="25">
+                    <Image Source="./Icons/History_Icon.png" />
+                </Button>
+                -->
+            </Grid>
+
+
+            <!-- Output -->
+            <StackPanel>
+                <TextBlock
+                    x:Name="OutputText"
+                    Margin="0 20 12 40"
+                    FontSize="50"
+                    TextAlignment="Right"
+                    Text="0">
+                </TextBlock>
+            </StackPanel>
+
+
+            <!-- Button Inputs -->
+            <StackPanel 
+                x:Name="ButtonInputs"
+                Orientation="Vertical"
+                VerticalAlignment="Stretch"
+                Height="347">
+                <Grid
+                    MinHeight="347">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition 
+                            Width="*">
+                        </ColumnDefinition>
+                        <ColumnDefinition 
+                            Width="*">
+                        </ColumnDefinition>
+                        <ColumnDefinition 
+                            Width="*">
+                        </ColumnDefinition>
+                        <ColumnDefinition 
+                            Width="*">
+                        </ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition
+                            Height="*">
+                        </RowDefinition>
+                        <RowDefinition
+                            Height="*">
+                        </RowDefinition>
+                        <RowDefinition
+                            Height="*">
+                        </RowDefinition>
+                        <RowDefinition
+                            Height="*">
+                        </RowDefinition>
+                        <RowDefinition
+                            Height="*">
+                        </RowDefinition>
+                        <RowDefinition
+                            Height="*">
+                        </RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <!--! Row 0 Buttons -->
+                    <!-- Percent Button -->
+                    <Border
+                        Grid.Column="0"
+                        Grid.Row="0"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="PercentButton"
+                            Content="%"
+
+                            Style="{StaticResource InputButton}">
+                        </Button>
+                    </Border>
+
+                    <!-- Square Root Button -->
+                    <Border
+                        Grid.Column="1"
+                        Grid.Row="0"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="SquareRootButton"
+                            Content="√"
+                            Style="{StaticResource InputButton}">
+                        </Button>
+                    </Border>
+
+                    <!-- Square Button -->
+                    <Border
+                        Grid.Column="2"
+                        Grid.Row="0"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="SquareButton"
+                            Content="x²"
+                            Style="{StaticResource InputButton}">
+                        </Button>
+                    </Border>
+
+                    <!-- Multiplicative Inverse Button -->
+                    <Border
+                        Grid.Column="3"
+                        Grid.Row="0"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="MultiplicativeInverseButton"
+                            Content="¹/ᵪ"
+                            Style="{StaticResource InputButton}">
+                        </Button>
+                    </Border>
+
+                    <!--! Row 1 Buttons -->
+                    <!-- Clear Entry Button -->
+                    <Border
+                        Grid.Column="0"
+                        Grid.Row="1"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="ClearEntryButton"
+                            Content="CE"
+                            Style="{StaticResource InputButton}">
+                        </Button>
+                    </Border>
+
+                    <!-- Clear All Button -->
+                    <Border
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="ClearAllButton"
+                            Content="C"
+                            Style="{StaticResource InputButton}">
+                        </Button>
+                    </Border>
+
+                    <!-- Back Space Button -->
+                    <Border
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="BackSpaceButton"
+                            Content="←"
+                            Style="{StaticResource InputButton}"
+                            FontSize="24">
+                        </Button>
+                    </Border>
+
+                    <!-- Division Button -->
+                    <Border
+                        Grid.Column="3"
+                        Grid.Row="1"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="DivisionButton"
+                            Content="÷"
+                            Style="{StaticResource InputButton}"
+                            FontWeight="DemiBold">
+                        </Button>
+                    </Border>
+
+
+                    <!--! Row 2 Buttons -->
+                    <!-- Seven Button -->
+                    <Border
+                        Grid.Column="0"
+                        Grid.Row="2"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="SevenButton"
+                            Content="7"
+                            Style="{StaticResource InputNumberButton}">
+                        </Button>
+                    </Border>
+
+                    <!-- Eight Button -->
+                    <Border
+                        Grid.Column="1"
+                        Grid.Row="2"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="EightButton"
+                            Content="8"
+                            Style="{StaticResource InputNumberButton}">
+                        </Button>
+                    </Border>
+
+                    <!-- Nine Button -->
+                    <Border
+                        Grid.Column="2"
+                        Grid.Row="2"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="NineButton"
+                            Content="9"
+                            Style="{StaticResource InputNumberButton}">
+                        </Button>
+                    </Border>
+
+                    <!-- Multiply Button -->
+                    <Border
+                        Grid.Column="3"
+                        Grid.Row="2"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="MultiplyButton"
+                            Content="×"
+                            Style="{StaticResource InputButton}"
+                            FontWeight="DemiBold">
+                        </Button>
+                    </Border>
+
+
+                    <!--! Row 3 Buttons -->
+                    <!-- Four Button -->
+                    <Border
+                        Grid.Column="0"
+                        Grid.Row="3"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="FourButton"
+                            Content="4"
+                            Style="{StaticResource InputNumberButton}">
+                        </Button>
+                    </Border>
+
+                    <!-- Five Button -->
+                    <Border
+                        Grid.Column="1"
+                        Grid.Row="3"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="FiveButton"
+                            Content="5"
+                            Style="{StaticResource InputNumberButton}">
+                        </Button>
+                    </Border>
+
+                    <!-- Six Button -->
+                    <Border
+                        Grid.Column="2"
+                        Grid.Row="3"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="SixButton"
+                            Content="6"
+                            Style="{StaticResource InputNumberButton}">
+                        </Button>
+                    </Border>
+
+                    <!-- Subtract Button -->
+                    <Border
+                        Grid.Column="3"
+                        Grid.Row="3"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="SubtractButton"
+                            Content="−"
+                            Style="{StaticResource InputButton}"
+                            FontWeight="DemiBold">
+                        </Button>
+                    </Border>
+
+
+                    <!--! Row 4 Buttons -->
+                    <!-- One Button -->
+                    <Border
+                        Grid.Column="0"
+                        Grid.Row="4"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="OneButton"
+                            Content="1"
+                            Style="{StaticResource InputNumberButton}">
+                        </Button>
+                    </Border>
+
+                    <!-- Two Button -->
+                    <Border
+                        Grid.Column="1"
+                        Grid.Row="4"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="TwoButton"
+                            Content="2"
+                            Style="{StaticResource InputNumberButton}">
+                        </Button>
+                    </Border>
+
+                    <!-- Three Button -->
+                    <Border
+                        Grid.Column="2"
+                        Grid.Row="4"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="ThreeButton"
+                            Content="3"
+                            Style="{StaticResource InputNumberButton}">
+                        </Button>
+                    </Border>
+
+                    <!-- Addition Button -->
+                    <Border
+                        Grid.Column="3"
+                        Grid.Row="4"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="AdditionButton"
+                            Content="+"
+                            Style="{StaticResource InputButton}"
+                            FontWeight="DemiBold">
+                        </Button>
+                    </Border>
+
+
+                    <!--! Row 5 Buttons -->
+                    <!-- Plus-Minus Sign Button -->
+                    <Border
+                        Grid.Column="0"
+                        Grid.Row="5"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="PlusMinusSignButton"
+                            Content="±"
+                            Style="{StaticResource InputButton}"
+                            FontWeight="DemiBold">
+                        </Button>
+                    </Border>
+
+                    <!-- Zero Button -->
+                    <Border
+                        Grid.Column="1"
+                        Grid.Row="5"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="ZeroButton"
+                            Content="0"
+                            Style="{StaticResource InputNumberButton}">
+                        </Button>
+                    </Border>
+
+                    <!-- Dot Button -->
+                    <Border
+                        Grid.Column="2"
+                        Grid.Row="5"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="DotButton"
+                            Content="."
+                            Style="{StaticResource InputButton}"
+                            FontWeight="DemiBold">
+                        </Button>
+                    </Border>
+
+                    <!-- Equals Button -->
+                    <Border
+                        Grid.Column="3"
+                        Grid.Row="5"
+                        Style="{StaticResource InputButtonBorder}">
+                        <Button
+                            x:Name="EqualsButton"
+                            Content="="
+                            Style="{StaticResource InputButton}"
+                            FontWeight="DemiBold">
+                        </Button>
+                    </Border>
+
+
+
+
+
+                </Grid>
+
+
+
+
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>
