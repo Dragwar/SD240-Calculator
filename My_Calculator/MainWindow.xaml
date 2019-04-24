@@ -12,7 +12,8 @@
         Height="550" 
         Width="500"
         MinHeight="560"
-        MinWidth="400">
+        MinWidth="400"
+        Keyboard.KeyUp="Window_KeyUp">
 
     <Window.Resources>
         <!--! Input Button Border Style -->
