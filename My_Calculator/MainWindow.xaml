@@ -9,9 +9,10 @@
         WindowStartupLocation="CenterScreen"
         Icon="./Icons/Calculator_Icon.png"
         Background="Black"
-        Height="550" 
+        Height="560" 
         Width="500"
         MinHeight="560"
+        MaxHeight="560"
         MinWidth="400"
         Keyboard.KeyUp="Window_KeyUp">
 
@@ -181,6 +182,7 @@
             <!-- Output -->
             <StackPanel 
                 x:Name="MainOutputPanel"
+                Height="125"
                 MaxHeight="125">
                 <Viewbox 
                     StretchDirection="DownOnly"
