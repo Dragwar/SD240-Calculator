@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,6 +17,7 @@ namespace My_Calculator
     {
         private const string ButtonString = "Button";
         private readonly List<char> MainInputAllowedCharacters = new List<char>() { '-', '.', };
+        private readonly List<char> SecondaryInputAllowedCharacters = new List<char>() { '-', '.', '+', '*', '/', };
 
 
         private List<string> MainOutput { get; set; }
@@ -70,19 +70,45 @@ namespace My_Calculator
             SecondaryOutput.Clear();
         }
         private void InputControlBackSpace() => RemoveFromMainOutputText();
-        private void DeconstructResult(double result, TextBlock displayText, List<string> stringListExpression, (bool ClearAllBeforeUpdateOutput, List<char> AllowedCharacters) config)
+        private void DeconstructResult(double result, OutputTextBlockEnum textBlock, (bool ClearAllBeforeUpdateOutput, List<char> AllowedCharacters, char? OperatorToAppend) config)
         {
-            // default to private list of allowed operators
-            config.AllowedCharacters = (config.AllowedCharacters?.Count ?? -1) <= 0 ? MainInputAllowedCharacters : config.AllowedCharacters;
+            // is MainOutput TextBlock or SecondaryOutput TextBlock
+            bool isMainOutput;
+            switch (textBlock)
+            {
+                case OutputTextBlockEnum.Main:
+                    //! default to private list of (MainInputAllowedCharacters) allowed operators
+                    config.AllowedCharacters = (config.AllowedCharacters?.Count ?? -1) <= 0 ? MainInputAllowedCharacters : config.AllowedCharacters;
+                    isMainOutput = true;
+                    break;
 
+                case OutputTextBlockEnum.Secondary:
+                    //! default to private list (SecondaryInputAllowedCharacters) of allowed operators
+                    config.AllowedCharacters = (config.AllowedCharacters?.Count ?? -1) <= 0 ? SecondaryInputAllowedCharacters : config.AllowedCharacters;
+                    isMainOutput = false;
+                    break;
+
+                default: throw new Exception("This shouldn't happen");
+            }
+
+
+            // clear current text and values
             if (config.ClearAllBeforeUpdateOutput)
             {
                 InputControlClearAll();
             }
             else
             {
-                stringListExpression.Clear();
-                displayText.Text = "";
+                if (isMainOutput)
+                {
+                    MainOutput.Clear();
+                    MainOutputText.Text = "";
+                }
+                else
+                {
+                    SecondaryOutput.Clear();
+                    SecondaryOutputText.Text = "";
+                }
             }
 
             // allows user to use backspace on each character in result string
@@ -90,10 +116,31 @@ namespace My_Calculator
             {
                 if (char.IsDigit(num) || config.AllowedCharacters.Contains(num))
                 {
-                    stringListExpression.Add($"{num}");
+                    if (isMainOutput)
+                    {
+                        MainOutput.Add($"{num}");
+                    }
+                    else
+                    {
+                        SecondaryOutput.Add($"{num}");
+                    }
                 }
             }
-            displayText.Text = string.Join("", stringListExpression);
+
+            // rebuild output with new result
+            if (isMainOutput)
+            {
+                MainOutputText.Text = string.Join("", MainOutput);
+            }
+            else
+            {
+                // append character (mathOperator) to SecondaryOutput
+                if (config.OperatorToAppend.HasValue && config.AllowedCharacters.Contains(config.OperatorToAppend.Value))
+                {
+                    SecondaryOutput.Add(config.OperatorToAppend.Value.ToString());
+                }
+                SecondaryOutputText.Text = string.Join("", SecondaryOutput);
+            }
         }
 
 
@@ -165,7 +212,7 @@ namespace My_Calculator
                     double result = expr.calculate();
                     result *= -1; // toggle to positive/negative
 
-                    DeconstructResult(result, MainOutputText, MainOutput, (false, null));
+                    DeconstructResult(result, OutputTextBlockEnum.Main, (false, null, null));
                 }
             }
             else if (mathOperator == "=")
@@ -185,7 +232,7 @@ namespace My_Calculator
 
                 MessageBox.Show($"{expr.getExpressionString()} = {result}", "Result", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                DeconstructResult(result, MainOutputText, MainOutput, (true, null));
+                DeconstructResult(result, OutputTextBlockEnum.Main, (true, null, null));
             }
             else if (MainOutput.Count >= 1 && SecondaryOutput.Count <= 0 && mathOperator != ".")
             {
@@ -211,9 +258,8 @@ namespace My_Calculator
                 Expression expr = new Expression(leftExpr + rightExpr);
 
                 double result = expr.calculate();
-                //MessageBox.Show($"{expr.getExpressionString()} = {result}", "Result", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                DeconstructResult(result, SecondaryOutputText, SecondaryOutput, (true, null));
+                DeconstructResult(result, OutputTextBlockEnum.Secondary, (true, null, mathOperator?[0]));
             }
         }
 

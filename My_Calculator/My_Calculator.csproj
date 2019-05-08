@@ -71,6 +71,7 @@
     </Compile>
     <Compile Include="Helpers\Enums\MathFunctionEnum.cs" />
     <Compile Include="Helpers\Enums\OperatorEnum.cs" />
+    <Compile Include="Helpers\Enums\OutputTextBlockEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
