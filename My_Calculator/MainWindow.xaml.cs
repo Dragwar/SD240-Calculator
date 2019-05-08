@@ -70,7 +70,10 @@ namespace My_Calculator
             SecondaryOutput.Clear();
         }
         private void InputControlBackSpace() => RemoveFromMainOutputText();
-        private string DeconstructResult(double result, OutputTextBlockEnum textBlock, (bool ClearAllBeforeUpdateOutput, List<char> AllowedCharacters, char? OperatorToAppend) config)
+        private string DeconstructResultAndDisplay(
+            double result,
+            OutputTextBlockEnum textBlock,
+            (bool ClearAllBeforeUpdateOutput, List<char> AllowedCharacters, char? OperatorToAppend) config)
         {
             // is MainOutput TextBlock or SecondaryOutput TextBlock
             bool isMainOutput;
@@ -148,51 +151,6 @@ namespace My_Calculator
             return output ?? throw new Exception("Failed To generate text output from result");
         }
 
-
-        private void InputControlButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button btn)
-            {
-                string btnName = btn.Name as string;
-                bool validInputControl = false;
-
-                if (!string.IsNullOrWhiteSpace(btnName))
-                {
-                    validInputControl = Enum.GetValues(typeof(InputControlEnum))
-                        .Cast<int>()
-                        .Any(@enum => CompareButtonName(btnName, (InputControlEnum)@enum));
-                }
-
-                if (validInputControl && Enum.Parse(typeof(InputControlEnum), btnName.Replace(ButtonString, "")) is InputControlEnum useEnum)
-                {
-                    switch (useEnum)
-                    {
-                        case InputControlEnum.BackSpace: InputControlBackSpace(); break;
-                        case InputControlEnum.ClearEntry: InputControlClearEntry(); break;
-                        case InputControlEnum.ClearAll: InputControlClearAll(); break;
-
-                        default: throw new Exception("this shouldn't happen");
-                    }
-                }
-            }
-        }
-
-        private void InputNumberButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button btn)
-            {
-                AddToMainOutputText(btn.Content as string);
-            }
-        }
-        private void OperatorButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button btn)
-            {
-                string operatorbtn = btn.Tag as string;
-                HandleNewOperator(operatorbtn);
-            }
-        }
-
         private void HandleNewOperator(string mathOperator)
         {
             if (mathOperator == ".")
@@ -210,7 +168,7 @@ namespace My_Calculator
             }
             else if (mathOperator == "plus-minus")
             {
-                if (MainOutput.Count >= 1)
+                if (MainOutput.Any())
                 {
                     string main = string.Join("", MainOutput);
                     Expression expr = new Expression(main);
@@ -219,7 +177,7 @@ namespace My_Calculator
 
                     try
                     {
-                        _ = DeconstructResult(result, OutputTextBlockEnum.Main, (false, null, null));
+                        _ = DeconstructResultAndDisplay(result, OutputTextBlockEnum.Main, (false, null, null));
                     }
                     catch (Exception e)
                     {
@@ -246,29 +204,22 @@ namespace My_Calculator
 
                 try
                 {
-                    _ = DeconstructResult(result, OutputTextBlockEnum.Main, (true, null, null));
+                    _ = DeconstructResultAndDisplay(result, OutputTextBlockEnum.Main, (true, null, null));
                 }
                 catch (Exception e)
                 {
                     MessageBox.Show(e.Message, $"Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            else if (MainOutput.Count >= 1 && SecondaryOutput.Count <= 0 && mathOperator != ".")
+            else if (MainOutput.Any() && !SecondaryOutput.Any() && mathOperator != ".")
             {
                 //! Add the operator to the end then show expression in the SecondaryOutput
                 //! (example: MainOutput --> "24" -> "24+" -> "")
                 //! (SecondaryOutput     --> ""   -> ""    -> "24+")
                 //! [now waiting for right hand side of the expression]
-                SecondaryOutput = new List<string>(MainOutput)
-                {
-                    mathOperator as string
-                };
-                MainOutput.Clear();
-
-                SecondaryOutputText.Text = string.Join("", SecondaryOutput);
-                MainOutputText.Text = "";
+                TransferMainToSecondaryOutputWithOperator(mathOperator);
             }
-            else if (MainOutput.Count >= 1 && SecondaryOutput.Count >= 1)
+            else if (MainOutput.Any() && SecondaryOutput.Any())
             {
                 //! When the user presses a different operator than the "=" (still calculate result but keep the new operator)
                 //! calculate the result then show result in the SecondaryInput
@@ -280,7 +231,7 @@ namespace My_Calculator
 
                 try
                 {
-                    string output = DeconstructResult(result, OutputTextBlockEnum.Secondary, (true, null, mathOperator?[0]));
+                    string output = DeconstructResultAndDisplay(result, OutputTextBlockEnum.Secondary, (true, null, mathOperator?[0]));
                     if (output != (result.ToString() + mathOperator))
                     {
                         throw new Exception("Generated incorrect output");
@@ -292,22 +243,32 @@ namespace My_Calculator
                 }
             }
         }
+        private void TransferMainToSecondaryOutputWithOperator(string mathOperator)
+        {
+            SecondaryOutput = new List<string>(MainOutput) { mathOperator as string };
+            MainOutput.Clear();
+
+            SecondaryOutputText.Text = string.Join("", SecondaryOutput);
+            MainOutputText.Text = "";
+        }
+
+
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
             switch (e.Key)
             {
-                case Key.Tab: break;
+                //case Key.Tab: break;
                 case Key.Enter: HandleNewOperator("="); break;
-                case Key.Escape: break;
-                case Key.Space: break;
+                //case Key.Escape: break;
+                //case Key.Space: break;
 
                 case Key.Back: InputControlBackSpace(); break;
 
-                case Key.Left: break;
-                case Key.Up: break;
-                case Key.Right: break;
-                case Key.Down: break;
+                //case Key.Left: break;
+                //case Key.Up: break;
+                //case Key.Right: break;
+                //case Key.Down: break;
 
                 case Key.D0: AddToMainOutputText("0"); break;
                 case Key.D1: AddToMainOutputText("1"); break;
@@ -338,8 +299,50 @@ namespace My_Calculator
                 case Key.Divide: HandleNewOperator("/"); break;
                 default: break;
             }
+        }
 
+        private void InputControlButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                string btnName = btn.Name as string;
+                bool validInputControl = false;
 
+                if (!string.IsNullOrWhiteSpace(btnName))
+                {
+                    validInputControl = Enum.GetValues(typeof(InputControlEnum))
+                        .Cast<int>()
+                        .Any(myEnum => CompareButtonName(btnName, (InputControlEnum)myEnum));
+                }
+
+                if (validInputControl && Enum.Parse(typeof(InputControlEnum), btnName.Replace(ButtonString, "")) is InputControlEnum useEnum)
+                {
+                    switch (useEnum)
+                    {
+                        case InputControlEnum.BackSpace: InputControlBackSpace(); break;
+                        case InputControlEnum.ClearEntry: InputControlClearEntry(); break;
+                        case InputControlEnum.ClearAll: InputControlClearAll(); break;
+
+                        default: throw new Exception("this shouldn't happen");
+                    }
+                }
+            }
+        }
+
+        private void InputNumberButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                AddToMainOutputText(btn.Content as string);
+            }
+        }
+        private void OperatorButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                string operatorbtn = btn.Tag as string;
+                HandleNewOperator(operatorbtn);
+            }
         }
 
         #region Not Implemented Yet
