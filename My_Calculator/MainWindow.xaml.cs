@@ -70,7 +70,7 @@ namespace My_Calculator
             SecondaryOutput.Clear();
         }
         private void InputControlBackSpace() => RemoveFromMainOutputText();
-        private void DeconstructResult(double result, OutputTextBlockEnum textBlock, (bool ClearAllBeforeUpdateOutput, List<char> AllowedCharacters, char? OperatorToAppend) config)
+        private string DeconstructResult(double result, OutputTextBlockEnum textBlock, (bool ClearAllBeforeUpdateOutput, List<char> AllowedCharacters, char? OperatorToAppend) config)
         {
             // is MainOutput TextBlock or SecondaryOutput TextBlock
             bool isMainOutput;
@@ -127,10 +127,12 @@ namespace My_Calculator
                 }
             }
 
+            string output;
             // rebuild output with new result
             if (isMainOutput)
             {
-                MainOutputText.Text = string.Join("", MainOutput);
+                output = string.Join("", MainOutput);
+                MainOutputText.Text = output;
             }
             else
             {
@@ -139,8 +141,11 @@ namespace My_Calculator
                 {
                     SecondaryOutput.Add(config.OperatorToAppend.Value.ToString());
                 }
-                SecondaryOutputText.Text = string.Join("", SecondaryOutput);
+                output = string.Join("", SecondaryOutput);
+                SecondaryOutputText.Text = output;
             }
+
+            return output ?? throw new Exception("Failed To generate text output from result");
         }
 
 
@@ -212,7 +217,14 @@ namespace My_Calculator
                     double result = expr.calculate();
                     result *= -1; // toggle to positive/negative
 
-                    DeconstructResult(result, OutputTextBlockEnum.Main, (false, null, null));
+                    try
+                    {
+                        _ = DeconstructResult(result, OutputTextBlockEnum.Main, (false, null, null));
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.Message, $"Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
             else if (mathOperator == "=")
@@ -230,9 +242,16 @@ namespace My_Calculator
                 Expression expr = new Expression(leftExpr + rightExpr);
                 double result = expr.calculate();
 
-                MessageBox.Show($"{expr.getExpressionString()} = {result}", "Result", MessageBoxButton.OK, MessageBoxImage.Information);
+                //MessageBox.Show($"{expr.getExpressionString()} = {result}", "Result", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                DeconstructResult(result, OutputTextBlockEnum.Main, (true, null, null));
+                try
+                {
+                    _ = DeconstructResult(result, OutputTextBlockEnum.Main, (true, null, null));
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, $"Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             else if (MainOutput.Count >= 1 && SecondaryOutput.Count <= 0 && mathOperator != ".")
             {
@@ -259,7 +278,18 @@ namespace My_Calculator
 
                 double result = expr.calculate();
 
-                DeconstructResult(result, OutputTextBlockEnum.Secondary, (true, null, mathOperator?[0]));
+                try
+                {
+                    string output = DeconstructResult(result, OutputTextBlockEnum.Secondary, (true, null, mathOperator?[0]));
+                    if (output != (result.ToString() + mathOperator))
+                    {
+                        throw new Exception("Generated incorrect output");
+                    }
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, $"Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
