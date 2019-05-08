@@ -190,7 +190,7 @@
                     HorizontalAlignment="Right"
                     Margin="0 10 12 0">
                     <TextBlock
-                        x:Name="TopOutputText"
+                        x:Name="SecondaryOutputText"
                         FontSize="25"
                         TextAlignment="Right"
                         Text=" ">
@@ -285,20 +285,21 @@
                         Grid.Row="0"
                         Style="{StaticResource InputButtonBorder}">
                         <Button
-                            x:Name="SquareButton"
+                            x:Name="PowerButton"
                             Content="x²"
+                            Tag="^"
                             Click="MathFunctionButton_Click"
                             Style="{StaticResource InputButton}">
                         </Button>
                     </Border>
 
-                    <!-- Multiplicative Inverse Button -->
+                    <!-- Modulus Inverse Button -->
                     <Border
                         Grid.Column="3"
                         Grid.Row="0"
                         Style="{StaticResource InputButtonBorder}">
                         <Button
-                            x:Name="MultiplicativeInverseButton"
+                            x:Name="ModulusButton"
                             Content="¹/ᵪ"
                             Click="MathFunctionButton_Click"
                             Style="{StaticResource InputButton}">
@@ -354,6 +355,7 @@
                         <Button
                             x:Name="DivisionButton"
                             Content="÷"
+                            Tag="/"
                             Click="OperatorButton_Click"
                             Style="{StaticResource InputButton}"
                             FontWeight="DemiBold">
@@ -409,6 +411,7 @@
                         <Button
                             x:Name="MultiplyButton"
                             Content="×"
+                            Tag="*"
                             Click="OperatorButton_Click"
                             Style="{StaticResource InputButton}"
                             FontWeight="DemiBold">
@@ -464,6 +467,7 @@
                         <Button
                             x:Name="SubtractButton"
                             Content="−"
+                            Tag="-"
                             Click="OperatorButton_Click"
                             Style="{StaticResource InputButton}"
                             FontWeight="DemiBold">
@@ -519,6 +523,7 @@
                         <Button
                             x:Name="AdditionButton"
                             Content="+"
+                            Tag="+"
                             Click="OperatorButton_Click"
                             Style="{StaticResource InputButton}"
                             FontWeight="DemiBold">
@@ -535,6 +540,7 @@
                         <Button
                             x:Name="PlusMinusSignButton"
                             Content="±"
+                            Tag="plus-minus"
                             Click="OperatorButton_Click"
                             Style="{StaticResource InputButton}"
                             FontWeight="DemiBold">
@@ -562,6 +568,7 @@
                         <Button
                             x:Name="DotButton"
                             Content="."
+                            Tag="."
                             Click="OperatorButton_Click"
                             Style="{StaticResource InputButton}"
                             FontWeight="ExtraBold">
@@ -576,6 +583,7 @@
                         <Button
                             x:Name="EqualsButton"
                             Content="="
+                            Tag="="
                             Click="OperatorButton_Click"
                             Style="{StaticResource InputButton}"
                             FontWeight="DemiBold">

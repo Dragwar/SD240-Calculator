@@ -4,7 +4,7 @@
     {
         Percent = 1,
         SquareRoot,
-        Square,
-        MultiplicativeInverse
+        Power,
+        Modulus
     }
 }

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using My_Calculator.Helpers.Enums;
+using Expression = org.mariuszgromada.math.mxparser.Expression;
 
 namespace My_Calculator
 {
@@ -14,35 +17,85 @@ namespace My_Calculator
     public partial class MainWindow : Window
     {
         private const string ButtonString = "Button";
-        public List<decimal> Numbers { get; set; }
+        private readonly List<char> MainInputAllowedCharacters = new List<char>() { '-', '.', };
+
+
+        private List<string> MainOutput { get; set; }
+        private List<string> SecondaryOutput { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
-            Numbers = new List<decimal>();
+            MainOutput = new List<string>();
+            SecondaryOutput = new List<string>();
         }
-        private void AddNumberToList(InputNumberEnum numberEnum)
-        {
-            Numbers.Add((int)numberEnum);
-            MainOutputText.Text = string.Join("", Numbers);
-        }
-        private bool CompareName<TEnum>(string name, TEnum enumToCompare) where TEnum : Enum => name == (enumToCompare.ToString() + ButtonString);
-        private void InputControlClearAll()
-        {
-            TopOutputText.Text = "";
-            MainOutputText.Text = "";
-            Numbers.Clear();
-        }
-        private void InputControlClearEntry() => MessageBox
-            .Show("Clear Entry is not implemented yet", $"ClearEntry{ButtonString}", MessageBoxButton.OK, MessageBoxImage.Warning);
 
-        private void InputControlBackSpace()
+        private void AddToMainOutputText(string str)
         {
-            if (Numbers.Count >= 1)
+            MainOutput.Add(str);
+            MainOutputText.Text = string.Join("", MainOutput);
+        }
+        private void RemoveFromMainOutputText([Optional] int? index)
+        {
+            if (MainOutput != null && MainOutput.Count > 0)
             {
-                Numbers.RemoveAt(Numbers.Count - 1);
-                MainOutputText.Text = string.Join("", Numbers);
+                MainOutput.RemoveAt(index ?? (MainOutput.Count - 1));
+                MainOutputText.Text = string.Join("", MainOutput);
             }
         }
+        private void RemoveFromSecondaryOutputText([Optional] int? index)
+        {
+            if (SecondaryOutput != null && SecondaryOutput.Count > 0)
+            {
+                SecondaryOutput.RemoveAt(index ?? (SecondaryOutput.Count - 1));
+                SecondaryOutputText.Text = string.Join("", SecondaryOutput);
+            }
+        }
+        private void AddToSecondaryOutputText(string str)
+        {
+            SecondaryOutput.Add(str);
+            SecondaryOutputText.Text = string.Join("", SecondaryOutput);
+        }
+        private bool CompareButtonName<TEnum>(string name, TEnum enumToCompare) where TEnum : Enum => name == (enumToCompare.ToString() + ButtonString);
+        private void InputControlClearEntry()
+        {
+            MainOutputText.Text = "";
+            MainOutput.Clear();
+        }
+        private void InputControlClearAll()
+        {
+            SecondaryOutputText.Text = "";
+            MainOutputText.Text = "";
+            MainOutput.Clear();
+            SecondaryOutput.Clear();
+        }
+        private void InputControlBackSpace() => RemoveFromMainOutputText();
+        private void DeconstructResult(double result, TextBlock displayText, List<string> stringListExpression, (bool ClearAllBeforeUpdateOutput, List<char> AllowedCharacters) config)
+        {
+            // default to private list of allowed operators
+            config.AllowedCharacters = (config.AllowedCharacters?.Count ?? -1) <= 0 ? MainInputAllowedCharacters : config.AllowedCharacters;
+
+            if (config.ClearAllBeforeUpdateOutput)
+            {
+                InputControlClearAll();
+            }
+            else
+            {
+                stringListExpression.Clear();
+                displayText.Text = "";
+            }
+
+            // allows user to use backspace on each character in result string
+            foreach (char num in result.ToString().ToCharArray())
+            {
+                if (char.IsDigit(num) || config.AllowedCharacters.Contains(num))
+                {
+                    stringListExpression.Add($"{num}");
+                }
+            }
+            displayText.Text = string.Join("", stringListExpression);
+        }
+
 
         private void InputControlButton_Click(object sender, RoutedEventArgs e)
         {
@@ -55,7 +108,7 @@ namespace My_Calculator
                 {
                     validInputControl = Enum.GetValues(typeof(InputControlEnum))
                         .Cast<int>()
-                        .Any(@enum => CompareName(btnName, (InputControlEnum)@enum));
+                        .Any(@enum => CompareButtonName(btnName, (InputControlEnum)@enum));
                 }
 
                 if (validInputControl && Enum.Parse(typeof(InputControlEnum), btnName.Replace(ButtonString, "")) is InputControlEnum useEnum)
@@ -72,40 +125,105 @@ namespace My_Calculator
             }
         }
 
-
-        private void MathFunctionButton_Click(object sender, RoutedEventArgs e) => MessageBox
-            .Show($"This {(sender as Button)?.Name} is not implemented yet", $"{(sender as Button)?.Name}", MessageBoxButton.OK, MessageBoxImage.Warning);
-
-
-        private void OperatorButton_Click(object sender, RoutedEventArgs e) => MessageBox
-            .Show($"This {(sender as Button)?.Name} is not implemented yet", $"{(sender as Button)?.Name}", MessageBoxButton.OK, MessageBoxImage.Warning);
-
         private void InputNumberButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btn && int.TryParse(btn.Content as string, out int number))
+            if (sender is Button btn)
             {
-                Numbers.Add(number);
-                MainOutputText.Text = string.Join("", Numbers);
+                AddToMainOutputText(btn.Content as string);
+            }
+        }
+        private void OperatorButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                string operatorbtn = btn.Tag as string;
+                HandleNewOperator(operatorbtn);
             }
         }
 
-        private void HistoryButton_Click(object sender, RoutedEventArgs e) => MessageBox
-            .Show("This History Menu is not implemented yet", $"{(sender as Button).Name}", MessageBoxButton.OK, MessageBoxImage.Warning);
+        private void HandleNewOperator(string mathOperator)
+        {
+            if (mathOperator == ".")
+            {
+                // only add on dot to MainOutput
+                if (MainOutput.Contains("."))
+                {
+                    MessageBox.Show("A number cannot contain more then one decimal place", "Invalid Operation", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    MainOutput.Add(".");
+                    MainOutputText.Text = string.Join("", MainOutput);
+                }
+            }
+            else if (mathOperator == "plus-minus")
+            {
+                if (MainOutput.Count >= 1)
+                {
+                    string main = string.Join("", MainOutput);
+                    Expression expr = new Expression(main);
+                    double result = expr.calculate();
+                    result *= -1; // toggle to positive/negative
 
-        private void HamburgerMenuButton_Click(object sender, RoutedEventArgs e) => MessageBox
-            .Show("This Hamburger Menu is not implemented yet", $"{(sender as Button).Name}", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    DeconstructResult(result, MainOutputText, MainOutput, (false, null));
+                }
+            }
+            else if (mathOperator == "=")
+            {
+                //! Calculate result
+                string leftExpr = string.Join("", SecondaryOutput);
+                string rightExpr = string.Join("", MainOutput);
+
+                // allows user to use the plus-minus operator after pressing an operator ('+','-','/',...)
+                if (rightExpr.StartsWith("-"))
+                {
+                    rightExpr = $"({rightExpr})"; //! surround with brackets for mXpareser to understand
+                }
+
+                Expression expr = new Expression(leftExpr + rightExpr);
+                double result = expr.calculate();
+
+                MessageBox.Show($"{expr.getExpressionString()} = {result}", "Result", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                DeconstructResult(result, MainOutputText, MainOutput, (true, null));
+            }
+            else if (MainOutput.Count >= 1 && SecondaryOutput.Count <= 0 && mathOperator != ".")
+            {
+                //! Add the operator to the end then show expression in the SecondaryOutput
+                //! (example: MainOutput --> "24" -> "24+" -> "")
+                //! (SecondaryOutput     --> ""   -> ""    -> "24+")
+                //! [now waiting for right hand side of the expression]
+                SecondaryOutput = new List<string>(MainOutput)
+                {
+                    mathOperator as string
+                };
+                MainOutput.Clear();
+
+                SecondaryOutputText.Text = string.Join("", SecondaryOutput);
+                MainOutputText.Text = "";
+            }
+            else if (MainOutput.Count >= 1 && SecondaryOutput.Count >= 1)
+            {
+                //! When the user presses a different operator than the "=" (still calculate result but keep the new operator)
+                //! calculate the result then show result in the SecondaryInput
+                string leftExpr = string.Join("", SecondaryOutput);
+                string rightExpr = string.Join("", MainOutput);
+                Expression expr = new Expression(leftExpr + rightExpr);
+
+                double result = expr.calculate();
+                //MessageBox.Show($"{expr.getExpressionString()} = {result}", "Result", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                DeconstructResult(result, SecondaryOutputText, SecondaryOutput, (true, null));
+            }
+        }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
             switch (e.Key)
             {
                 case Key.Tab: break;
-
-                //case Key.Return when (int)e.Key == 6: break;
-                case Key.Enter: break;
-
+                case Key.Enter: HandleNewOperator("="); break;
                 case Key.Escape: break;
-
                 case Key.Space: break;
 
                 case Key.Back: InputControlBackSpace(); break;
@@ -115,39 +233,46 @@ namespace My_Calculator
                 case Key.Right: break;
                 case Key.Down: break;
 
-                case Key.D0: AddNumberToList(InputNumberEnum.Zero); break;
-                case Key.D1: AddNumberToList(InputNumberEnum.One); break;
-                case Key.D2: AddNumberToList(InputNumberEnum.Two); break;
-                case Key.D3: AddNumberToList(InputNumberEnum.Three); break;
-                case Key.D4: AddNumberToList(InputNumberEnum.Four); break;
-                case Key.D5: AddNumberToList(InputNumberEnum.Five); break;
-                case Key.D6: AddNumberToList(InputNumberEnum.Six); break;
-                case Key.D7: AddNumberToList(InputNumberEnum.Seven); break;
-                case Key.D8: AddNumberToList(InputNumberEnum.Eight); break;
-                case Key.D9: AddNumberToList(InputNumberEnum.Nine); break;
+                case Key.D0: AddToMainOutputText("0"); break;
+                case Key.D1: AddToMainOutputText("1"); break;
+                case Key.D2: AddToMainOutputText("2"); break;
+                case Key.D3: AddToMainOutputText("3"); break;
+                case Key.D4: AddToMainOutputText("4"); break;
+                case Key.D5: AddToMainOutputText("5"); break;
+                case Key.D6: AddToMainOutputText("6"); break;
+                case Key.D7: AddToMainOutputText("7"); break;
+                case Key.D8: AddToMainOutputText("8"); break;
+                case Key.D9: AddToMainOutputText("9"); break;
 
-                case Key.NumPad0: AddNumberToList(InputNumberEnum.Zero); break;
-                case Key.NumPad1: AddNumberToList(InputNumberEnum.One); break;
-                case Key.NumPad2: AddNumberToList(InputNumberEnum.Two); break;
-                case Key.NumPad3: AddNumberToList(InputNumberEnum.Three); break;
-                case Key.NumPad4: AddNumberToList(InputNumberEnum.Four); break;
-                case Key.NumPad5: AddNumberToList(InputNumberEnum.Five); break;
-                case Key.NumPad6: AddNumberToList(InputNumberEnum.Six); break;
-                case Key.NumPad7: AddNumberToList(InputNumberEnum.Seven); break;
-                case Key.NumPad8: AddNumberToList(InputNumberEnum.Eight); break;
-                case Key.NumPad9: AddNumberToList(InputNumberEnum.Nine); break;
+                case Key.NumPad0: AddToMainOutputText("0"); break;
+                case Key.NumPad1: AddToMainOutputText("1"); break;
+                case Key.NumPad2: AddToMainOutputText("2"); break;
+                case Key.NumPad3: AddToMainOutputText("3"); break;
+                case Key.NumPad4: AddToMainOutputText("4"); break;
+                case Key.NumPad5: AddToMainOutputText("5"); break;
+                case Key.NumPad6: AddToMainOutputText("6"); break;
+                case Key.NumPad7: AddToMainOutputText("7"); break;
+                case Key.NumPad8: AddToMainOutputText("8"); break;
+                case Key.NumPad9: AddToMainOutputText("9"); break;
 
-                //TODO: Make operator work
-                case Key.Multiply: break;
-                case Key.Add: break;
-                case Key.Separator: break;
-                case Key.Subtract: break;
-                case Key.Decimal: break;
-                case Key.Divide: break;
-
+                case Key.Multiply: HandleNewOperator("*"); break;
+                case Key.Add: HandleNewOperator("+"); break;
+                case Key.Subtract: HandleNewOperator("-"); break;
+                case Key.OemPeriod: HandleNewOperator("."); break;
+                case Key.Divide: HandleNewOperator("/"); break;
                 default: break;
             }
 
+
         }
+
+        #region Not Implemented Yet
+        private void HistoryButton_Click(object sender, RoutedEventArgs e) => MessageBox
+            .Show("This History Menu is not implemented yet", $"{(sender as Button).Name}", MessageBoxButton.OK, MessageBoxImage.Warning);
+        private void HamburgerMenuButton_Click(object sender, RoutedEventArgs e) => MessageBox
+            .Show("This Hamburger Menu is not implemented yet", $"{(sender as Button).Name}", MessageBoxButton.OK, MessageBoxImage.Warning);
+        private void MathFunctionButton_Click(object sender, RoutedEventArgs e) => MessageBox
+            .Show($"This {(sender as Button)?.Name} is not implemented yet", $"{(sender as Button)?.Name}", MessageBoxButton.OK, MessageBoxImage.Warning);
+        #endregion
     }
 }
