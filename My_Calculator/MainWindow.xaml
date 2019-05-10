@@ -189,23 +189,29 @@
                     Stretch="Uniform"
                     HorizontalAlignment="Right"
                     Margin="0 10 12 0">
-                    <TextBlock
+                    <TextBox
                         x:Name="SecondaryOutputText"
                         FontSize="25"
                         TextAlignment="Right"
-                        Text=" ">
-                    </TextBlock>
+                        Text=" "
+                        Background="Black"
+                        Foreground="LightGray"
+                        BorderThickness="0">
+                    </TextBox>
                 </Viewbox>
                 <Viewbox
                     StretchDirection="DownOnly"
                     Stretch="Uniform"
                     HorizontalAlignment="Right"
                     Margin="0 10 12 10">
-                    <TextBlock
+                    <TextBox
                         x:Name="MainOutputText"
                         FontSize="50"
-                        Text="0">
-                    </TextBlock>
+                        Text="0"
+                        Background="Black"
+                        Foreground="LightGray"
+                        BorderThickness="0">
+                    </TextBox>
                 </Viewbox>
             </StackPanel>
 

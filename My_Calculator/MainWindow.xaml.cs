@@ -280,6 +280,21 @@ namespace My_Calculator
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
+            if (MainOutputText.IsKeyboardFocused)
+            {
+                MainOutput.Clear();
+                MainOutput.TrimExcess();
+                MainOutput.AddRange(MainOutputText.Text.Trim().Select(c => c.ToString()));
+                return;
+            }
+            else if (SecondaryOutputText.IsKeyboardFocused)
+            {
+                SecondaryOutput.Clear();
+                SecondaryOutput.TrimExcess();
+                SecondaryOutput.AddRange(SecondaryOutputText.Text.Trim().Select(c => c.ToString()));
+                return;
+            }
+
             // handle keys
             switch (e.Key)
             {
@@ -412,7 +427,7 @@ namespace My_Calculator
             double result = expr.calculate(); // will parse string of numbers
             result = MathFunctions.sqrt(result);
             string secOutput = $"sqrt({main})";
-            
+
             // show work in secondary output (DON'T UPDATE SecondaryOutput because you want the user to be able to operate on the MainOutput)
             SecondaryOutputText.Text = secOutput;
 
