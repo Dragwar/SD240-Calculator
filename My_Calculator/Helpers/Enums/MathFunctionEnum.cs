@@ -2,9 +2,9 @@
 {
     public enum MathFunctionEnum
     {
-        Percent = 1,
+        Factorial = 1,
         SquareRoot,
-        Power,
+        Exponent,
         Modulus
     }
 }

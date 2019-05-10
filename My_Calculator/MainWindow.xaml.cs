@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using My_Calculator.Helpers.Enums;
+using org.mariuszgromada.math.mxparser.mathcollection;
 using Expression = org.mariuszgromada.math.mxparser.Expression;
 
 namespace My_Calculator
@@ -16,8 +17,8 @@ namespace My_Calculator
     public partial class MainWindow : Window
     {
         private const string ButtonString = "Button";
-        private readonly List<char> MainInputAllowedCharacters = new List<char>() { '-', '.', };
-        private readonly List<char> SecondaryInputAllowedCharacters = new List<char>() { '-', '.', '+', '*', '/', };
+        private readonly List<char> MainInputAllowedCharacters = new List<char>() { '-', '.', '+', 'E' };
+        private readonly List<char> SecondaryInputAllowedCharacters = new List<char>() { '-', '.', '+', '*', '/', 'E' };
 
 
         private List<string> MainOutput { get; set; }
@@ -29,34 +30,33 @@ namespace My_Calculator
             MainOutput = new List<string>();
             SecondaryOutput = new List<string>();
         }
-
-        private void AddToMainOutputText(string str)
+        private bool CompareButtonName<TEnum>(string name, TEnum enumToCompare) where TEnum : Enum => name == (enumToCompare.ToString() + ButtonString);
+        private void AddToMainOutputTextAndUpdate(string str)
         {
             MainOutput.Add(str);
             MainOutputText.Text = string.Join("", MainOutput);
         }
-        private void RemoveFromMainOutputText([Optional] int? index)
+        private void RemoveFromMainOutputTextAndUpdate([Optional] int? index)
         {
-            if (MainOutput != null && MainOutput.Count > 0)
+            if (MainOutput != null && MainOutput.Any())
             {
                 MainOutput.RemoveAt(index ?? (MainOutput.Count - 1));
                 MainOutputText.Text = string.Join("", MainOutput);
             }
         }
-        private void RemoveFromSecondaryOutputText([Optional] int? index)
+        private void RemoveFromSecondaryOutputTextAndUpdate([Optional] int? index)
         {
-            if (SecondaryOutput != null && SecondaryOutput.Count > 0)
+            if (SecondaryOutput != null && SecondaryOutput.Any())
             {
                 SecondaryOutput.RemoveAt(index ?? (SecondaryOutput.Count - 1));
                 SecondaryOutputText.Text = string.Join("", SecondaryOutput);
             }
         }
-        private void AddToSecondaryOutputText(string str)
+        private void AddToSecondaryOutputTextAndUpdate(string str)
         {
             SecondaryOutput.Add(str);
             SecondaryOutputText.Text = string.Join("", SecondaryOutput);
         }
-        private bool CompareButtonName<TEnum>(string name, TEnum enumToCompare) where TEnum : Enum => name == (enumToCompare.ToString() + ButtonString);
         private void InputControlClearEntry()
         {
             MainOutputText.Text = "";
@@ -69,7 +69,22 @@ namespace My_Calculator
             MainOutput.Clear();
             SecondaryOutput.Clear();
         }
-        private void InputControlBackSpace() => RemoveFromMainOutputText();
+        private void InputControlBackSpace() => RemoveFromMainOutputTextAndUpdate();
+
+        /// <summary>
+        /// Break down (<see cref="double"/> <paramref name="result"/>) to a charArray to allow the user to delete single characters
+        /// and then display the result on the selected (<see cref="OutputTextBlockEnum"/> output) window
+        /// <para/>
+        /// 
+        /// </summary>
+        /// <param name="result">calculation result</param>
+        /// <param name="textBlock">What textBlock and textList to use</param>
+        /// <param name="config">
+        ///     <para/>[<see cref="Required"/>] ClearAllBeforeUpdateOutput: Clear input window, 
+        ///     <para/>[<see cref="OptionalAttribute"/>] AllowedCharacters: what characters to keep during rebuild of the output, 
+        ///     <para/>[<see cref="OptionalAttribute"/>] OperatorToAppend: what mathOperator to append
+        /// </param>
+        /// <returns>(<see cref="string"/> output)</returns>
         private string DeconstructResultAndDisplay(
             double result,
             OutputTextBlockEnum textBlock,
@@ -81,13 +96,19 @@ namespace My_Calculator
             {
                 case OutputTextBlockEnum.Main:
                     //! default to private list of (MainInputAllowedCharacters) allowed operators
-                    config.AllowedCharacters = (config.AllowedCharacters?.Count ?? -1) <= 0 ? MainInputAllowedCharacters : config.AllowedCharacters;
+                    if (config.AllowedCharacters is null || !config.AllowedCharacters.Any())
+                    {
+                        config.AllowedCharacters = MainInputAllowedCharacters;
+                    }
                     isMainOutput = true;
                     break;
 
                 case OutputTextBlockEnum.Secondary:
                     //! default to private list (SecondaryInputAllowedCharacters) of allowed operators
-                    config.AllowedCharacters = (config.AllowedCharacters?.Count ?? -1) <= 0 ? SecondaryInputAllowedCharacters : config.AllowedCharacters;
+                    if (config.AllowedCharacters is null || !config.AllowedCharacters.Any())
+                    {
+                        config.AllowedCharacters = SecondaryInputAllowedCharacters;
+                    }
                     isMainOutput = false;
                     break;
 
@@ -175,6 +196,7 @@ namespace My_Calculator
                     double result = expr.calculate();
                     result *= -1; // toggle to positive/negative
 
+                    // Display Result
                     try
                     {
                         _ = DeconstructResultAndDisplay(result, OutputTextBlockEnum.Main, (false, null, null));
@@ -200,8 +222,7 @@ namespace My_Calculator
                 Expression expr = new Expression(leftExpr + rightExpr);
                 double result = expr.calculate();
 
-                //MessageBox.Show($"{expr.getExpressionString()} = {result}", "Result", MessageBoxButton.OK, MessageBoxImage.Information);
-
+                // Display Result
                 try
                 {
                     _ = DeconstructResultAndDisplay(result, OutputTextBlockEnum.Main, (true, null, null));
@@ -213,10 +234,6 @@ namespace My_Calculator
             }
             else if (MainOutput.Any() && !SecondaryOutput.Any() && mathOperator != ".")
             {
-                //! Add the operator to the end then show expression in the SecondaryOutput
-                //! (example: MainOutput --> "24" -> "24+" -> "")
-                //! (SecondaryOutput     --> ""   -> ""    -> "24+")
-                //! [now waiting for right hand side of the expression]
                 TransferMainToSecondaryOutputWithOperator(mathOperator);
             }
             else if (MainOutput.Any() && SecondaryOutput.Any())
@@ -243,6 +260,15 @@ namespace My_Calculator
                 }
             }
         }
+
+        /// <summary>
+        /// Add the operator to the end then show expression in the SecondaryOutput
+        /// <para/>Example:
+        /// (MainOutput          --> "24" -> "24+" -> "")
+        /// (SecondaryOutput     --> ""   -> ""    -> "24+")
+        /// <para/>"now waiting for right hand side of the expression"
+        /// </summary>
+        /// <param name="mathOperator">Not checked to be a valid operator inside please check before invoking</param>
         private void TransferMainToSecondaryOutputWithOperator(string mathOperator)
         {
             SecondaryOutput = new List<string>(MainOutput) { mathOperator as string };
@@ -252,10 +278,9 @@ namespace My_Calculator
             MainOutputText.Text = "";
         }
 
-
-
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
+            // handle keys
             switch (e.Key)
             {
                 //case Key.Tab: break;
@@ -270,27 +295,27 @@ namespace My_Calculator
                 //case Key.Right: break;
                 //case Key.Down: break;
 
-                case Key.D0: AddToMainOutputText("0"); break;
-                case Key.D1: AddToMainOutputText("1"); break;
-                case Key.D2: AddToMainOutputText("2"); break;
-                case Key.D3: AddToMainOutputText("3"); break;
-                case Key.D4: AddToMainOutputText("4"); break;
-                case Key.D5: AddToMainOutputText("5"); break;
-                case Key.D6: AddToMainOutputText("6"); break;
-                case Key.D7: AddToMainOutputText("7"); break;
-                case Key.D8: AddToMainOutputText("8"); break;
-                case Key.D9: AddToMainOutputText("9"); break;
+                case Key.D0: AddToMainOutputTextAndUpdate("0"); break;
+                case Key.D1: AddToMainOutputTextAndUpdate("1"); break;
+                case Key.D2: AddToMainOutputTextAndUpdate("2"); break;
+                case Key.D3: AddToMainOutputTextAndUpdate("3"); break;
+                case Key.D4: AddToMainOutputTextAndUpdate("4"); break;
+                case Key.D5: AddToMainOutputTextAndUpdate("5"); break;
+                case Key.D6: AddToMainOutputTextAndUpdate("6"); break;
+                case Key.D7: AddToMainOutputTextAndUpdate("7"); break;
+                case Key.D8: AddToMainOutputTextAndUpdate("8"); break;
+                case Key.D9: AddToMainOutputTextAndUpdate("9"); break;
 
-                case Key.NumPad0: AddToMainOutputText("0"); break;
-                case Key.NumPad1: AddToMainOutputText("1"); break;
-                case Key.NumPad2: AddToMainOutputText("2"); break;
-                case Key.NumPad3: AddToMainOutputText("3"); break;
-                case Key.NumPad4: AddToMainOutputText("4"); break;
-                case Key.NumPad5: AddToMainOutputText("5"); break;
-                case Key.NumPad6: AddToMainOutputText("6"); break;
-                case Key.NumPad7: AddToMainOutputText("7"); break;
-                case Key.NumPad8: AddToMainOutputText("8"); break;
-                case Key.NumPad9: AddToMainOutputText("9"); break;
+                case Key.NumPad0: AddToMainOutputTextAndUpdate("0"); break;
+                case Key.NumPad1: AddToMainOutputTextAndUpdate("1"); break;
+                case Key.NumPad2: AddToMainOutputTextAndUpdate("2"); break;
+                case Key.NumPad3: AddToMainOutputTextAndUpdate("3"); break;
+                case Key.NumPad4: AddToMainOutputTextAndUpdate("4"); break;
+                case Key.NumPad5: AddToMainOutputTextAndUpdate("5"); break;
+                case Key.NumPad6: AddToMainOutputTextAndUpdate("6"); break;
+                case Key.NumPad7: AddToMainOutputTextAndUpdate("7"); break;
+                case Key.NumPad8: AddToMainOutputTextAndUpdate("8"); break;
+                case Key.NumPad9: AddToMainOutputTextAndUpdate("9"); break;
 
                 case Key.Multiply: HandleNewOperator("*"); break;
                 case Key.Add: HandleNewOperator("+"); break;
@@ -310,6 +335,7 @@ namespace My_Calculator
 
                 if (!string.IsNullOrWhiteSpace(btnName))
                 {
+                    // Check if the Button name matches
                     validInputControl = Enum.GetValues(typeof(InputControlEnum))
                         .Cast<int>()
                         .Any(myEnum => CompareButtonName(btnName, (InputControlEnum)myEnum));
@@ -317,6 +343,7 @@ namespace My_Calculator
 
                 if (validInputControl && Enum.Parse(typeof(InputControlEnum), btnName.Replace(ButtonString, "")) is InputControlEnum useEnum)
                 {
+                    // handle InputControl action
                     switch (useEnum)
                     {
                         case InputControlEnum.BackSpace: InputControlBackSpace(); break;
@@ -333,7 +360,7 @@ namespace My_Calculator
         {
             if (sender is Button btn)
             {
-                AddToMainOutputText(btn.Content as string);
+                AddToMainOutputTextAndUpdate(btn.Content as string);
             }
         }
         private void OperatorButton_Click(object sender, RoutedEventArgs e)
@@ -344,14 +371,90 @@ namespace My_Calculator
                 HandleNewOperator(operatorbtn);
             }
         }
+        private void MathFunctionButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                string btnTag = btn.Tag as string;
+                bool validMathFunc = Enum.TryParse(btnTag, true, out MathFunctionEnum mathFunc);
+                if (validMathFunc)
+                {
+                    switch (mathFunc)
+                    {
+                        case MathFunctionEnum.SquareRoot: SquareRoot(); break;
+
+                        case MathFunctionEnum.Factorial: Factorial(); break;
+
+                        case MathFunctionEnum.Exponent:
+
+                            break;
+
+                        case MathFunctionEnum.Modulus:
+
+                            break;
+
+                        default: throw new Exception($"{btnTag} is not recognized as a math Function");
+                    }
+                }
+            }
+        }
+
+
+        #region Math Functions
+        private void SquareRoot()
+        {
+            string main = string.Join("", MainOutput);
+            Expression expr = new Expression(main);
+            if (!expr.checkSyntax())
+            {
+                return;
+            }
+            double result = expr.calculate(); // will parse string of numbers
+            result = MathFunctions.sqrt(result);
+            string secOutput = $"sqrt({main})";
+            
+            // show work in secondary output (DON'T UPDATE SecondaryOutput because you want the user to be able to operate on the MainOutput)
+            SecondaryOutputText.Text = secOutput;
+
+            // show result in main
+            string output = DeconstructResultAndDisplay(result, OutputTextBlockEnum.Main, (false, null, null));
+            if (output != result.ToString())
+            {
+                throw new Exception($"{nameof(SquareRoot)} calculation error: did not match expected result ({output} != {result})");
+            }
+        }
+        private void Factorial()
+        {
+            string stringExpression = string.Join("", MainOutput);
+            Expression expr = new Expression(stringExpression);
+            if (!expr.checkSyntax())
+            {
+                return;
+            }
+            double result = expr.calculate(); // will parse the string of numbers
+            result = MathFunctions.factorial(result);
+
+            string output = DeconstructResultAndDisplay(result, OutputTextBlockEnum.Main, (true, null, null));
+            if (output == "")
+            {
+                MainOutput.Clear();
+                MainOutputText.Text = result.ToString();
+            }
+            else if (output != result.ToString() && Math.Floor(result).ToString() != Math.Floor(double.Parse(output)).ToString())
+            {
+                throw new Exception($"{nameof(Factorial)} calculation error: did not match expected result ({output} != {result})");
+            }
+            SecondaryOutputText.Text = stringExpression;
+            SecondaryOutput.Clear();
+        }
+        #endregion
+
 
         #region Not Implemented Yet
         private void HistoryButton_Click(object sender, RoutedEventArgs e) => MessageBox
             .Show("This History Menu is not implemented yet", $"{(sender as Button).Name}", MessageBoxButton.OK, MessageBoxImage.Warning);
         private void HamburgerMenuButton_Click(object sender, RoutedEventArgs e) => MessageBox
             .Show("This Hamburger Menu is not implemented yet", $"{(sender as Button).Name}", MessageBoxButton.OK, MessageBoxImage.Warning);
-        private void MathFunctionButton_Click(object sender, RoutedEventArgs e) => MessageBox
-            .Show($"This {(sender as Button)?.Name} is not implemented yet", $"{(sender as Button)?.Name}", MessageBoxButton.OK, MessageBoxImage.Warning);
         #endregion
     }
 }
