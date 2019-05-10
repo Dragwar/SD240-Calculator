@@ -64,6 +64,35 @@
                 Property="BorderThickness"
                 Value="1">
             </Setter>
+            
+            <!-- Override default style for IsMouseOver -->
+            <!-- (Required for changing what happens on IsMouseOver) -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border 
+                            Background="{TemplateBinding Background}" 
+                            BorderBrush="Gray" 
+                            BorderThickness="1">
+                            <ContentPresenter 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center">
+                            </ContentPresenter>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            
+            <Style.Triggers>
+                <Trigger
+                    Property="IsMouseOver"
+                    Value="True">
+                    <Setter
+                        Property="Background"
+                        Value="LightGray">
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <!--! Input Number Button Style -->
@@ -172,7 +201,7 @@
                     Background="Transparent"
                     BorderThickness="0"
                     Margin="20 0 0 0"
-                    Click="HistoryButton_Click">
+                    Click="HistoryButton_Click">                                    
                     <Image Source="./Icons/History_Icon.png" />
                 </Button>
 
