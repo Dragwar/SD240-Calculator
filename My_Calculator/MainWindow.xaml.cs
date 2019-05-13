@@ -18,7 +18,7 @@ namespace My_Calculator
     {
         private const string ButtonString = "Button";
         private readonly List<char> MainInputAllowedCharacters = new List<char>() { '-', '.', '+', 'E' };
-        private readonly List<char> SecondaryInputAllowedCharacters = new List<char>() { '-', '.', '+', '*', '/', 'E' };
+        private readonly List<char> SecondaryInputAllowedCharacters = new List<char>() { '-', '.', '+', '*', '/', '^', 'E' };
 
 
         private List<string> MainOutput { get; set; }
@@ -219,8 +219,22 @@ namespace My_Calculator
                     rightExpr = $"({rightExpr})"; //! surround with brackets for mXpareser to understand
                 }
 
-                Expression expr = new Expression(leftExpr + rightExpr);
-                double result = expr.calculate();
+                double result;
+
+                // handle modulo evaluation
+                if (SecondaryOutputText.Text.Contains(" mod"))
+                {
+                    leftExpr = string.Join("", leftExpr.Where(c => char.IsDigit(c)));
+                    rightExpr = string.Join("", rightExpr.Where(c => char.IsDigit(c)));
+                    double leftNum = Convert.ToDouble(leftExpr);
+                    double rightNum = Convert.ToDouble(rightExpr);
+                    result = rightNum > leftNum ? result = MathFunctions.mod(rightNum, leftNum) : result = MathFunctions.mod(leftNum, rightNum);
+                }
+                else
+                {
+                    Expression expr = new Expression(leftExpr + rightExpr);
+                    result = expr.calculate();
+                }
 
                 // Display Result
                 try
@@ -400,13 +414,9 @@ namespace My_Calculator
 
                         case MathFunctionEnum.Factorial: Factorial(); break;
 
-                        case MathFunctionEnum.Exponent:
+                        case MathFunctionEnum.Exponent: HandleNewOperator("^"); break;
 
-                            break;
-
-                        case MathFunctionEnum.Modulus:
-
-                            break;
+                        case MathFunctionEnum.Modulus: Modulo(); break;
 
                         default: throw new Exception($"{btnTag} is not recognized as a math Function");
                     }
@@ -461,6 +471,21 @@ namespace My_Calculator
             }
             SecondaryOutputText.Text = stringExpression;
             SecondaryOutput.Clear();
+        }
+        private void Modulo()
+        {
+            // The calculation is handled in the "HandleNewOperator()" method
+            // this method is just for displaying mod to the user
+            MainOutput.Add(" mod");
+            string main = string.Join("", MainOutput);
+            SecondaryOutputText.Text = main;
+
+            SecondaryOutput.Clear();
+            SecondaryOutput.TrimExcess();
+            SecondaryOutput.AddRange(MainOutput);
+
+            MainOutput.Clear();
+            MainOutput.TrimExcess();
         }
         #endregion
 
