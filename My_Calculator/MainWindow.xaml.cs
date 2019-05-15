@@ -29,6 +29,7 @@ namespace My_Calculator
             InitializeComponent();
             MainOutput = new List<string>();
             SecondaryOutput = new List<string>();
+            SizeToContent = SizeToContent.WidthAndHeight;
         }
         private bool CompareButtonName<TEnum>(string name, TEnum enumToCompare) where TEnum : Enum => name == (enumToCompare.ToString() + ButtonString);
         private void AddToMainOutputTextAndUpdate(string str)
@@ -411,17 +412,41 @@ namespace My_Calculator
                     switch (mathFunc)
                     {
                         case MathFunctionEnum.SquareRoot: SquareRoot(); break;
-
                         case MathFunctionEnum.Factorial: Factorial(); break;
-
                         case MathFunctionEnum.Exponent: HandleNewOperator("^"); break;
-
                         case MathFunctionEnum.Modulus: Modulo(); break;
-
                         default: throw new Exception($"{btnTag} is not recognized as a math Function");
                     }
                 }
             }
+        }
+
+        private void HamburgerMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            List<SelectConversion> selectConversionWindows = App.Current.Windows
+                .OfType<SelectConversion>()
+                .ToList();
+
+            SelectConversion selectWindow;
+            if (selectConversionWindows.Any())
+            {
+                selectWindow = selectConversionWindows.First();
+                if (selectConversionWindows.Count >= 2)
+                {
+                    selectConversionWindows.Remove(selectWindow);
+                    selectConversionWindows.ForEach(window =>
+                    {
+                        window.Hide();
+                        window.Close();
+                    });
+                }
+            }
+            else
+            {
+                selectWindow = new SelectConversion();
+            }
+
+            selectWindow.Activate();
         }
 
 
@@ -493,8 +518,6 @@ namespace My_Calculator
         #region Not Implemented Yet
         private void HistoryButton_Click(object sender, RoutedEventArgs e) => MessageBox
             .Show("This History Menu is not implemented yet", $"{(sender as Button).Name}", MessageBoxButton.OK, MessageBoxImage.Warning);
-        private void HamburgerMenuButton_Click(object sender, RoutedEventArgs e) => MessageBox
-            .Show("This Hamburger Menu is not implemented yet", $"{(sender as Button).Name}", MessageBoxButton.OK, MessageBoxImage.Warning);
         #endregion
     }
 }
