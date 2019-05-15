@@ -423,11 +423,11 @@ namespace My_Calculator
 
         private void HamburgerMenuButton_Click(object sender, RoutedEventArgs e)
         {
-            List<SelectConversion> selectConversionWindows = App.Current.Windows
-                .OfType<SelectConversion>()
+            List<SelectConversionWindow> selectConversionWindows = App.Current.Windows
+                .OfType<SelectConversionWindow>()
                 .ToList();
 
-            SelectConversion selectWindow;
+            SelectConversionWindow selectWindow;
             if (selectConversionWindows.Any())
             {
                 selectWindow = selectConversionWindows.First();
@@ -443,7 +443,7 @@ namespace My_Calculator
             }
             else
             {
-                selectWindow = new SelectConversion();
+                selectWindow = new SelectConversionWindow();
             }
 
             selectWindow.Activate();

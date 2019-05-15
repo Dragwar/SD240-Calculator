@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:My_Calculator"
         mc:Ignorable="d"
-        xmlns:enum="clr-namespace:My_Calculator.Helpers.Enums"
         Title="Everett Grassler's Calculator"
         WindowStartupLocation="CenterScreen"
         Icon="./Icons/Calculator_Icon.png"

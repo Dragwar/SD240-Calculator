@@ -65,8 +65,8 @@
     <Compile Include="Helpers\Enums\ConversionTypeEnum.cs" />
     <Compile Include="Helpers\Enums\NumeralSystemEnum.cs" />
     <Compile Include="Helpers\NumeralSystemConversion.cs" />
-    <Compile Include="SelectConversion.xaml.cs">
-      <DependentUpon>SelectConversion.xaml</DependentUpon>
+    <Compile Include="SelectConversionWindow.xaml.cs">
+      <DependentUpon>SelectConversionWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -109,7 +109,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SelectConversion.xaml">
+    <Page Include="SelectConversionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

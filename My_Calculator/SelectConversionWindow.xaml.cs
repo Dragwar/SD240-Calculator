@@ -8,11 +8,11 @@ using My_Calculator.Helpers.Enums;
 namespace My_Calculator
 {
     /// <summary>
-    /// Interaction logic for SelectConversion.xaml
+    /// Interaction logic for SelectConversionWindow.xaml
     /// </summary>
-    public partial class SelectConversion : Window
+    public partial class SelectConversionWindow : Window
     {
-        public SelectConversion()
+        public SelectConversionWindow()
         {
             InitializeComponent();
             BuildConversionTypeButtons();
@@ -21,7 +21,7 @@ namespace My_Calculator
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             SizeToContent = SizeToContent.WidthAndHeight;
 
-            // Open MainWindow when SelectConversion (this) is closed
+            // Open MainWindow when SelectConversionWindow (this) is closed
             Closed += (obj, e) => App.Current.MainWindow.WindowState = WindowState.Normal;
 
             Show();
@@ -48,7 +48,7 @@ namespace My_Calculator
             }
         }
 
-        //~SelectConversion()
+        //~SelectConversionWindow()
         //{
         //    //MainStackPanel.Children
         //    //    .OfType<Button>()
@@ -64,7 +64,8 @@ namespace My_Calculator
                 {
                     switch (selectedType)
                     {
-                        case ConversionTypeEnum.None: App.Current.MainWindow.WindowState = WindowState.Normal; Hide(); Close(); break;
+                        case ConversionTypeEnum.None: CloseAndOpenMainWindow(); return;
+
                         case ConversionTypeEnum.NumeralSystem: break;
                         case ConversionTypeEnum.PercentToAndFromDecimal: break;
                         case ConversionTypeEnum.Weight: break;
@@ -78,5 +79,11 @@ namespace My_Calculator
             }
         }
 
+        private void CloseAndOpenMainWindow()
+        {
+            App.Current.MainWindow.WindowState = WindowState.Normal;
+            Hide();
+            Close();
+        }
     }
 }
