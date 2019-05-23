@@ -14,7 +14,7 @@ namespace My_Calculator.Helpers
         public NumeralSystemConversion(int numberToConvert) => NumberToConvert = numberToConvert;
 
 
-        public int ConvertToInt(NumeralSystemEnum numeralSystem, string valueToConvert)
+        public static int ConvertToInt(NumeralSystemEnum numeralSystem, string valueToConvert)
         {
             try
             {

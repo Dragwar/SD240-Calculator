@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using My_Calculator.ConversionWindows;
 using My_Calculator.Helpers.Enums;
 
 namespace My_Calculator
@@ -21,8 +22,14 @@ namespace My_Calculator
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             SizeToContent = SizeToContent.WidthAndHeight;
 
-            // Open MainWindow when SelectConversionWindow (this) is closed
-            Closed += (obj, e) => App.Current.MainWindow.WindowState = WindowState.Normal;
+            // unsubscribe event listeners (not really needed?)
+            Closed += (obj, e) =>
+            {
+                MainStackPanel.Children
+                    .OfType<Button>()
+                    .ToList()
+                    .ForEach(btn => btn.Click -= ConvertTypeButton_Click);
+            };
 
             Show();
         }
@@ -66,14 +73,29 @@ namespace My_Calculator
                     {
                         case ConversionTypeEnum.None: CloseAndOpenMainWindow(); return;
 
-                        case ConversionTypeEnum.NumeralSystem: break;
+                        case ConversionTypeEnum.NumeralSystem:
+                            List<NumeralSystemConversionWindow> list = App.Current.Windows.OfType<NumeralSystemConversionWindow>().ToList();
+                            NumeralSystemConversionWindow window;
+                            if (list.Any())
+                            {
+                                window = list.First();
+
+                            }
+                            else
+                            {
+                                window = new NumeralSystemConversionWindow();
+                            }
+                            Close();
+                            window.Activate();
+                            break;
+
                         case ConversionTypeEnum.PercentToAndFromDecimal: break;
                         case ConversionTypeEnum.Weight: break;
                         case ConversionTypeEnum.Length: break;
                         case ConversionTypeEnum.Temperature: break;
                         case ConversionTypeEnum.FileSize: break;
                         case ConversionTypeEnum.Time: break;
-                        default: break;
+                        default: throw new NotImplementedException("ConversionType is not found");
                     }
                 }
             }
@@ -82,7 +104,6 @@ namespace My_Calculator
         private void CloseAndOpenMainWindow()
         {
             App.Current.MainWindow.WindowState = WindowState.Normal;
-            Hide();
             Close();
         }
     }
