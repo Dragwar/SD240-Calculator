@@ -23,13 +23,13 @@ namespace My_Calculator
             SizeToContent = SizeToContent.WidthAndHeight;
 
             // unsubscribe event listeners (not really needed?)
-            Closed += (obj, e) =>
-            {
-                MainStackPanel.Children
-                    .OfType<Button>()
-                    .ToList()
-                    .ForEach(btn => btn.Click -= ConvertTypeButton_Click);
-            };
+            //Closed += (obj, e) =>
+            //{
+            //    MainStackPanel.Children
+            //        .OfType<Button>()
+            //        .ToList()
+            //        .ForEach(btn => btn.Click -= ConvertTypeButton_Click);
+            //};
 
             Show();
         }
@@ -71,20 +71,14 @@ namespace My_Calculator
                 {
                     switch (selectedType)
                     {
-                        case ConversionTypeEnum.None: CloseAndOpenMainWindow(); return;
+                        case ConversionTypeEnum.None: CloseAllConversionWindowsAndOpenMainWindow(); return;
 
                         case ConversionTypeEnum.NumeralSystem:
-                            List<NumeralSystemConversionWindow> list = App.Current.Windows.OfType<NumeralSystemConversionWindow>().ToList();
-                            NumeralSystemConversionWindow window;
-                            if (list.Any())
-                            {
-                                window = list.First();
+                            List<NumeralSystemConversionWindow> list = App.Current.Windows
+                                .OfType<NumeralSystemConversionWindow>()
+                                .ToList();
 
-                            }
-                            else
-                            {
-                                window = new NumeralSystemConversionWindow();
-                            }
+                            NumeralSystemConversionWindow window = list.Any() ? list.First() : new NumeralSystemConversionWindow();
                             Close();
                             window.Activate();
                             break;
@@ -101,10 +95,19 @@ namespace My_Calculator
             }
         }
 
-        private void CloseAndOpenMainWindow()
+        private void CloseAllConversionWindowsAndOpenMainWindow()
         {
+            List<Window> conversionWindowList = App.Current.Windows.OfType<Window>()
+                .Where(window => window.GetType() != typeof(MainWindow) && window.Title.ToLower().Contains("conversion"))
+                .ToList();
+
+            conversionWindowList.ForEach(window =>
+            {
+                window.Hide();
+                window.Close();
+            });
+
             App.Current.MainWindow.WindowState = WindowState.Normal;
-            Close();
         }
     }
 }

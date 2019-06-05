@@ -20,7 +20,7 @@ namespace My_Calculator.Helpers
         public TimeConversion SetValueToConvert(double newValueToConvert, TimeTypeEnum newTimeType)
         {
             ValueToConvert = newValueToConvert;
-            CurrentTimeType = newTimeType;
+            CurrentTimeType = newTimeType;            
             return this;
         }
 

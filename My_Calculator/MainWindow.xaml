@@ -28,7 +28,7 @@
 
     <Border Padding="7.5">
         <StackPanel>
-
+            
             <!-- Top Row -->
             <Grid>
                 <Grid.ColumnDefinitions>
