@@ -2,9 +2,8 @@
 {
     public enum ConversionTypeEnum
     {
-        None,
+        BasicCalculator,
         NumeralSystem,
-        PercentToAndFromDecimal,
         Weight,
         Length,
         Temperature,

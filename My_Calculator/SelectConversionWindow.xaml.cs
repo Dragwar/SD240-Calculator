@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using My_Calculator.ConversionWindows;
@@ -22,16 +23,21 @@ namespace My_Calculator
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             SizeToContent = SizeToContent.WidthAndHeight;
 
-            // unsubscribe event listeners (not really needed?)
-            //Closed += (obj, e) =>
-            //{
-            //    MainStackPanel.Children
-            //        .OfType<Button>()
-            //        .ToList()
-            //        .ForEach(btn => btn.Click -= ConvertTypeButton_Click);
-            //};
+            Closed += SelectConversionWindow_Closed;
 
             Show();
+        }
+
+        private void SelectConversionWindow_Closed(object sender, EventArgs e)
+        {
+            List<Window> conversionWindowList = App.Current.Windows.OfType<Window>()
+               .Where(window => window.GetType() != typeof(MainWindow) && window.Title.ToLower().Contains("conversion"))
+               .ToList();
+
+            if (!conversionWindowList.Any())
+            {
+                App.Current.MainWindow.WindowState = WindowState.Normal;
+            }
         }
 
         private void BuildConversionTypeButtons()
@@ -71,7 +77,7 @@ namespace My_Calculator
                 {
                     switch (selectedType)
                     {
-                        case ConversionTypeEnum.None: CloseAllConversionWindowsAndOpenMainWindow(); return;
+                        case ConversionTypeEnum.BasicCalculator: CloseAllConversionWindowsAndOpenMainWindow(); return;
 
                         case ConversionTypeEnum.NumeralSystem:
                             List<NumeralSystemConversionWindow> list = App.Current.Windows
@@ -82,8 +88,6 @@ namespace My_Calculator
                             Close();
                             window.Activate();
                             break;
-
-                        case ConversionTypeEnum.PercentToAndFromDecimal: break;
                         case ConversionTypeEnum.Weight: break;
                         case ConversionTypeEnum.Length: break;
                         case ConversionTypeEnum.Temperature: break;
