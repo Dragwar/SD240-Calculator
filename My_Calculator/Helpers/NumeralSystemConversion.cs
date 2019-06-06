@@ -14,6 +14,12 @@ namespace My_Calculator.Helpers
         public NumeralSystemConversion(int numberToConvert) => NumberToConvert = numberToConvert;
 
 
+        public static double ConvertToPercent(double number) => number * 100;
+        public static decimal ConvertToPercent(decimal number) => number * 100;
+        public static double ConvertToDecimal(double percent) => percent / 100;
+        public static decimal ConvertToDecimal(decimal percent) => percent / 100;
+
+
         public static int ConvertToInt(NumeralSystemEnum numeralSystem, string valueToConvert)
         {
             try

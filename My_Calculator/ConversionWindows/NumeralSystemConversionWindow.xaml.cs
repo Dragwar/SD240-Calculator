@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using My_Calculator.Helpers;
 using My_Calculator.Helpers.Enums;
@@ -32,6 +33,8 @@ namespace My_Calculator.ConversionWindows
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             SizeToContent = SizeToContent.WidthAndHeight;
             Show();
+
+            Closed += NumeralSystemConversionWindow_Closed;
         }
         private bool CompareButtonName<TEnum>(string name, TEnum enumToCompare) where TEnum : Enum => name == (enumToCompare.ToString() + ButtonString);
 
@@ -147,6 +150,10 @@ namespace My_Calculator.ConversionWindows
             if (isMainOutput)
             {
                 output = string.Join("", MainOutput);
+                if (config.OperatorToAppend.HasValue && config.AllowedCharacters.Contains(config.OperatorToAppend.Value))
+                {
+                    output += config.OperatorToAppend;
+                }
                 MainOutputText.Text = output;
             }
             else
@@ -280,7 +287,20 @@ namespace My_Calculator.ConversionWindows
             if (sender is Button btn)
             {
                 string operatorbtn = btn.Tag as string;
-                if (operatorbtn == "plus-minus")
+                if (operatorbtn == ".")
+                {
+                    // only add on dot to MainOutput
+                    if (MainOutput.Contains("."))
+                    {
+                        MessageBox.Show("A number cannot contain more then one decimal place", "Invalid Operation", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    else
+                    {
+                        MainOutput.Add(".");
+                        MainOutputText.Text = string.Join("", MainOutput);
+                    }
+                }
+                else if (operatorbtn == "plus-minus")
                 {
                     if (MainOutput.Any())
                     {
@@ -384,6 +404,90 @@ namespace My_Calculator.ConversionWindows
             SecondaryOutputText.Text = $"{main} to Hexadecimal";
         }
 
+
+        private void DecimalToPercentButton_Click(object sender, RoutedEventArgs e)
+        {
+            string main = string.Join("", MainOutput);
+            main = string.IsNullOrWhiteSpace(main) ? "0" : main;
+
+            MainOutput.Clear();
+
+            double result;
+            try
+            {
+                result = NumeralSystemConversion.ConvertToPercent(double.Parse(main));
+            }
+            catch (FormatException err)
+            {
+                MainOutputText.Text = $"{err.Message}";
+                return;
+            }
+            catch (OverflowException err)
+            {
+                MainOutputText.Text = $"{err.Message}";
+                return;
+            }
+
+            _ = DeconstructResultAndDisplay(
+                result: result.ToString(),
+                textBlock: OutputTextBlockEnum.Main,
+                config: (ClearAllBeforeUpdateOutput: true, new List<char>(MainInputAllowedCharacters) { '%' }, '%'));
+            SecondaryOutputText.Text = $"{main} to Percent";
+        }
+
+        private void PercentToDecimalButton_Click(object sender, RoutedEventArgs e)
+        {
+            string main = string.Join("", MainOutput);
+            main = string.IsNullOrWhiteSpace(main) ? "0" : main;
+
+            MainOutput.Clear();
+
+            double result;
+            try
+            {
+                result = NumeralSystemConversion.ConvertToDecimal(double.Parse(main));
+            }
+            catch (FormatException err)
+            {
+                MainOutputText.Text = $"{err.Message}";
+                return;
+            }
+            catch (OverflowException err)
+            {
+                MainOutputText.Text = $"{err.Message}";
+                return;
+            }
+
+            _ = DeconstructResultAndDisplay(result.ToString(), OutputTextBlockEnum.Main, (true, null, null));
+            SecondaryOutputText.Text = $"{main} to Decimal";
+        }
+
+        private void NumeralSystemConversionWindow_Closed(object sender, EventArgs e)
+        {
+            List<Window> conversionWindowList = App.Current.Windows.OfType<Window>()
+               .Where(window => window.GetType() != typeof(MainWindow) && window.Title.ToLower().Contains("conversion"))
+               .ToList();
+
+            SelectConversionWindow foundWindow = conversionWindowList
+                .FirstOrDefault(window => window.GetType() == typeof(SelectConversionWindow)) as SelectConversionWindow;
+
+            if (foundWindow is null)
+            {
+                foundWindow = new SelectConversionWindow();
+            }
+
+            foundWindow.Activate();
+
+            if (conversionWindowList.Any())
+            {
+                conversionWindowList.Remove(foundWindow);
+                conversionWindowList.ForEach(window =>
+                {
+                    window.Hide();
+                    window.Close();
+                });
+            }
+        }
 
         #region Not Implemented Yet
         private void HistoryButton_Click(object sender, RoutedEventArgs e) => MessageBox

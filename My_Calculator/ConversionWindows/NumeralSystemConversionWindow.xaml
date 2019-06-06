@@ -171,7 +171,7 @@
                     </Grid.RowDefinitions>
 
                     <!--! Row 0 Buttons -->
-                    <!-- Percent Button -->
+                    <!-- Binary Button -->
                     <Border
                         Grid.Column="0"
                         Grid.Row="0"
@@ -185,7 +185,7 @@
                         </Button>
                     </Border>
 
-                    <!-- Square Root Button -->
+                    <!-- Octal Button -->
                     <Border
                         Grid.Column="1"
                         Grid.Row="0"
@@ -199,7 +199,7 @@
                         </Button>
                     </Border>
 
-                    <!-- Square Button -->
+                    <!-- Hexadecimal Button -->
                     <Border
                         Grid.Column="2"
                         Grid.Row="0"
@@ -380,20 +380,48 @@
 
 
                     <!--! Row 5 Buttons -->
-                    <!-- Plus-Minus Sign Button -->
-                    <Border
+                    <Grid
+                        Grid.Column="0"
+                        Grid.Row="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <!-- Plus-Minus Sign Button -->
+                        <Border
                         Grid.Column="0"
                         Grid.Row="5"
                         Style="{StaticResource InputButtonBorder}">
-                        <Button
+                            <Button
                             x:Name="PlusMinusSignButton"
                             Content="±"
                             Tag="plus-minus"
                             Click="OperatorButton_Click"
                             Style="{StaticResource InputButton}"
                             FontWeight="DemiBold">
-                        </Button>
-                    </Border>
+                            </Button>
+                        </Border>
+
+                        <!-- Dot Button -->
+                        <Border
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Style="{StaticResource InputButtonBorder}">
+                            <Button
+                                x:Name="DotButton"
+                                Content="."
+                                Tag="."
+                                Click="OperatorButton_Click"
+                                Style="{StaticResource InputButton}"
+                                FontWeight="Bold">
+                            </Button>
+                        </Border>
+                    </Grid>
+                    
 
                     <!-- Zero Button -->
                     <Border
@@ -408,35 +436,49 @@
                         </Button>
                     </Border>
 
-                    <!-- Dot Button -->
-                    <Border
+                    
+                    <Grid
                         Grid.Column="2"
-                        Grid.Row="5"
-                        Style="{StaticResource InputButtonBorder}">
-                        <Button
-                            x:Name="DotButton"
-                            Content="."
-                            Tag="."
-                            Click="OperatorButton_Click"
-                            Style="{StaticResource InputButton}"
-                            FontWeight="ExtraBold">
-                        </Button>
-                    </Border>
+                        Grid.Row="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
 
-                    <!-- Equals Button -->
-                    <Border
-                        Grid.Column="3"
-                        Grid.Row="5"
-                        Style="{StaticResource InputButtonBorder}">
-                        <Button
-                            x:Name="EqualsButton"
-                            Content="="
-                            Tag="="
-                            Click="OperatorButton_Click"
-                            Style="{StaticResource InputButton}"
-                            FontWeight="DemiBold">
-                        </Button>
-                    </Border>
+                        <!-- DecimalToPercent Button -->
+                        <Border
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Style="{StaticResource InputButtonBorder}">
+                            <Button
+                                x:Name="PercentToDecimalButton"
+                                Content="%->D"
+                                Click="PercentToDecimalButton_Click"
+                                Style="{StaticResource InputButton}"
+                                FontSize="16"
+                                FontWeight="SemiBold">
+                            </Button>
+                        </Border>
+
+                        <!-- PercentToDecimal Button -->
+                        <Border
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Style="{StaticResource InputButtonBorder}">
+                            <Button
+                                x:Name="DecimalToPercentButton"
+                                Content="D->%"
+                                Click="DecimalToPercentButton_Click"
+                                Style="{StaticResource InputButton}"
+                                FontSize="16"
+                                FontWeight="SemiBold">
+                            </Button>
+                        </Border>
+
+                    </Grid>
                 </Grid>
 
 

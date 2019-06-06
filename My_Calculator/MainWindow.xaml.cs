@@ -30,6 +30,16 @@ namespace My_Calculator
             MainOutput = new List<string>();
             SecondaryOutput = new List<string>();
             SizeToContent = SizeToContent.WidthAndHeight;
+
+            List<Button> buttonElements = ButtonInputs.Children
+                .OfType<Grid>()
+                .ToList()?[0]
+                .Children.OfType<Border>()
+                .ToList()
+                .Select(border => border.Child.GetType() == typeof(Button) ? border.Child as Button : null)
+                .ToList();
+
+            buttonElements.ForEach(btn => btn.Focusable = false);
         }
         private bool CompareButtonName<TEnum>(string name, TEnum enumToCompare) where TEnum : Enum => name == (enumToCompare.ToString() + ButtonString);
         private void AddToMainOutputTextAndUpdate(string str)
