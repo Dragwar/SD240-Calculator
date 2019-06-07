@@ -37,7 +37,10 @@ namespace My_Calculator
 
             if (!conversionWindowList.Any())
             {
-                App.Current.MainWindow.WindowState = WindowState.Normal;
+                if (App.Current.MainWindow != null)
+                {
+                    App.Current.MainWindow.WindowState = WindowState.Normal;
+                }
             }
         }
 
@@ -83,7 +86,7 @@ namespace My_Calculator
                         case ConversionTypeEnum.NumeralSystem: OpenConversionWindow<NumeralSystemConversionWindow>(); break;
                         case ConversionTypeEnum.Weight: break;
                         case ConversionTypeEnum.Length: break;
-                        case ConversionTypeEnum.Temperature: break;
+                        case ConversionTypeEnum.Temperature: OpenConversionWindow<TemperatureConversionWindow>(); break;
                         case ConversionTypeEnum.FileSize: break;
                         case ConversionTypeEnum.Time: OpenConversionWindow<TimeConversionWindow>(); break;
                         default: throw new NotImplementedException("ConversionType is not found");

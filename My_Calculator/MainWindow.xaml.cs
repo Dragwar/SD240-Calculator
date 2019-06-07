@@ -40,6 +40,8 @@ namespace My_Calculator
                 .ToList();
 
             buttonElements.ForEach(btn => btn.Focusable = false);
+
+            Closed += (object sender, EventArgs e) => App.Current.Shutdown();
         }
         private bool CompareButtonName<TEnum>(string name, TEnum enumToCompare) where TEnum : Enum => name == (enumToCompare.ToString() + ButtonString);
         private void AddToMainOutputTextAndUpdate(string str)
