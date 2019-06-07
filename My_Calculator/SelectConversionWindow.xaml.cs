@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using My_Calculator.ConversionWindows;
+using My_Calculator.Helpers;
 using My_Calculator.Helpers.Enums;
 
 namespace My_Calculator
@@ -79,24 +80,28 @@ namespace My_Calculator
                     {
                         case ConversionTypeEnum.BasicCalculator: CloseAllConversionWindowsAndOpenMainWindow(); return;
 
-                        case ConversionTypeEnum.NumeralSystem:
-                            List<NumeralSystemConversionWindow> list = App.Current.Windows
-                                .OfType<NumeralSystemConversionWindow>()
-                                .ToList();
-
-                            NumeralSystemConversionWindow window = list.Any() ? list.First() : new NumeralSystemConversionWindow();
-                            Close();
-                            window.Activate();
-                            break;
+                        case ConversionTypeEnum.NumeralSystem: OpenConversionWindow<NumeralSystemConversionWindow>(); break;
                         case ConversionTypeEnum.Weight: break;
                         case ConversionTypeEnum.Length: break;
                         case ConversionTypeEnum.Temperature: break;
                         case ConversionTypeEnum.FileSize: break;
-                        case ConversionTypeEnum.Time: break;
+                        case ConversionTypeEnum.Time: OpenConversionWindow<TimeConversionWindow>(); break;
                         default: throw new NotImplementedException("ConversionType is not found");
                     }
                 }
             }
+        }
+
+        private void OpenConversionWindow<TConversionWindow>()
+            where TConversionWindow : Window, new()
+        {
+            List<TConversionWindow> list = App.Current.Windows
+                .OfType<TConversionWindow>()
+                .ToList();
+
+            TConversionWindow window = list.Any() ? list.First() : new TConversionWindow();
+            Close();
+            window.Activate();
         }
 
         private void CloseAllConversionWindowsAndOpenMainWindow()
@@ -112,6 +117,33 @@ namespace My_Calculator
             });
 
             App.Current.MainWindow.WindowState = WindowState.Normal;
+        }
+
+        public static void CloseAllConversionWindowsAndOpenSelectConversionWindow()
+        {
+            List<Window> conversionWindowList = App.Current.Windows.OfType<Window>()
+               .Where(window => window.GetType() != typeof(MainWindow) && window.Title.ToLower().Contains("conversion"))
+               .ToList();
+
+            SelectConversionWindow foundWindow = conversionWindowList
+                .FirstOrDefault(window => window.GetType() == typeof(SelectConversionWindow)) as SelectConversionWindow;
+
+            if (foundWindow is null)
+            {
+                foundWindow = new SelectConversionWindow();
+            }
+
+            foundWindow.Activate();
+
+            if (conversionWindowList.Any())
+            {
+                conversionWindowList.Remove(foundWindow);
+                conversionWindowList.ForEach(window =>
+                {
+                    window.Hide();
+                    window.Close();
+                });
+            }
         }
     }
 }

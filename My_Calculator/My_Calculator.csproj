@@ -65,6 +65,9 @@
     <Compile Include="ConversionWindows\NumeralSystemConversionWindow.xaml.cs">
       <DependentUpon>NumeralSystemConversionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ConversionWindows\TimeConversionWindow.xaml.cs">
+      <DependentUpon>TimeConversionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\Enums\ConversionTypeEnum.cs" />
     <Compile Include="Helpers\Enums\TimeTypeEnum.cs" />
     <Compile Include="Helpers\Enums\NumeralSystemEnum.cs" />
@@ -111,6 +114,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="ConversionWindows\NumeralSystemConversionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConversionWindows\TimeConversionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

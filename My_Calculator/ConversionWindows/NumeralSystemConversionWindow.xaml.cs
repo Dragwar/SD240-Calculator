@@ -464,29 +464,7 @@ namespace My_Calculator.ConversionWindows
 
         private void NumeralSystemConversionWindow_Closed(object sender, EventArgs e)
         {
-            List<Window> conversionWindowList = App.Current.Windows.OfType<Window>()
-               .Where(window => window.GetType() != typeof(MainWindow) && window.Title.ToLower().Contains("conversion"))
-               .ToList();
-
-            SelectConversionWindow foundWindow = conversionWindowList
-                .FirstOrDefault(window => window.GetType() == typeof(SelectConversionWindow)) as SelectConversionWindow;
-
-            if (foundWindow is null)
-            {
-                foundWindow = new SelectConversionWindow();
-            }
-
-            foundWindow.Activate();
-
-            if (conversionWindowList.Any())
-            {
-                conversionWindowList.Remove(foundWindow);
-                conversionWindowList.ForEach(window =>
-                {
-                    window.Hide();
-                    window.Close();
-                });
-            }
+            SelectConversionWindow.CloseAllConversionWindowsAndOpenSelectConversionWindow();
         }
 
         #region Not Implemented Yet
