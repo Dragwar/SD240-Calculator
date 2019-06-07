@@ -32,8 +32,17 @@ namespace My_Calculator.Helpers
 
         public static double ConvertToFileSizeType(double valueToConvert, FileSizeTypeEnum valueToConvertFileSizeType, FileSizeTypeEnum toConvertTo)
         {
-            Expression convertFileSize = new Expression("(value * valueSizeType) / toSizeType");
-            convertFileSize.addArguments(new Argument("value", valueToConvert));
+            if (valueToConvertFileSizeType == toConvertTo)
+            {
+                return valueToConvert;
+            }
+
+            const string value = "value";
+            const string valueSizeType = "valueSizeType";
+            const string toSizeType = "toSizeType";
+
+            Expression convertFileSize = new Expression($"({value} * {valueSizeType}) / {toSizeType}");
+            convertFileSize.addArguments(new Argument(value, valueToConvert));
 
             string mXparserValueToConvertFileSizeType;
             switch (valueToConvertFileSizeType)
@@ -47,19 +56,11 @@ namespace My_Calculator.Helpers
                 case FileSizeTypeEnum.Petabytes: mXparserValueToConvertFileSizeType = "[PB]"; break;
                 default: throw new ArgumentException($"FileSizeTypeEnum doesn't support: {valueToConvertFileSizeType}");
             }
-            convertFileSize.addArguments(new Argument("valueSizeType", mXparserValueToConvertFileSizeType));
+            convertFileSize.addArguments(new Argument(valueSizeType, mXparserValueToConvertFileSizeType));
 
             string mXparserToConvertToFileSizeType;
             switch (toConvertTo)
             {
-                case FileSizeTypeEnum.Bit when valueToConvertFileSizeType == FileSizeTypeEnum.Bit: return valueToConvert;
-                case FileSizeTypeEnum.Bytes when valueToConvertFileSizeType == FileSizeTypeEnum.Bytes: return valueToConvert;
-                case FileSizeTypeEnum.Kilobytes when valueToConvertFileSizeType == FileSizeTypeEnum.Kilobytes: return valueToConvert;
-                case FileSizeTypeEnum.Megabytes when valueToConvertFileSizeType == FileSizeTypeEnum.Megabytes: return valueToConvert;
-                case FileSizeTypeEnum.Gigabytes when valueToConvertFileSizeType == FileSizeTypeEnum.Gigabytes: return valueToConvert;
-                case FileSizeTypeEnum.Terabytes when valueToConvertFileSizeType == FileSizeTypeEnum.Terabytes: return valueToConvert;
-                case FileSizeTypeEnum.Petabytes when valueToConvertFileSizeType == FileSizeTypeEnum.Petabytes: return valueToConvert;
-
                 case FileSizeTypeEnum.Bit: mXparserToConvertToFileSizeType = "[b]"; break;
                 case FileSizeTypeEnum.Bytes: mXparserToConvertToFileSizeType = "[B]"; break;
                 case FileSizeTypeEnum.Kilobytes: mXparserToConvertToFileSizeType = "[kB]"; break;
@@ -69,7 +70,7 @@ namespace My_Calculator.Helpers
                 case FileSizeTypeEnum.Petabytes: mXparserToConvertToFileSizeType = "[PB]"; break;
                 default: throw new ArgumentException($"FileSizeTypeEnum doesn't support: {toConvertTo}");
             }
-            convertFileSize.addArguments(new Argument("toSizeType", mXparserToConvertToFileSizeType));
+            convertFileSize.addArguments(new Argument(toSizeType, mXparserToConvertToFileSizeType));
 
             return convertFileSize.calculate();
         }
