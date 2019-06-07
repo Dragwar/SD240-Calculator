@@ -65,6 +65,9 @@
     <Compile Include="ConversionWindows\NumeralSystemConversionWindow.xaml.cs">
       <DependentUpon>NumeralSystemConversionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ConversionWindows\TemperatureConversionWindow.xaml.cs">
+      <DependentUpon>TemperatureConversionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ConversionWindows\TimeConversionWindow.xaml.cs">
       <DependentUpon>TimeConversionWindow.xaml</DependentUpon>
     </Compile>
@@ -116,6 +119,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="ConversionWindows\NumeralSystemConversionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConversionWindows\TemperatureConversionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
