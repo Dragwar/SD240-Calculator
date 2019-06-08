@@ -41,7 +41,7 @@ namespace My_Calculator.Helpers
             const string toType = "toType";
 
             Expression convertLength = new Expression($"({value} * {valueType}) / {toType}");
-            convertLength.addArguments(new Argument(value, 52));
+            convertLength.addArguments(new Argument(value, valueToConvert));
 
             string mXparserValueUnitType;
             switch (valueUnitType)
@@ -52,7 +52,7 @@ namespace My_Calculator.Helpers
                 case LengthTypeEnum.Kilometers: mXparserValueUnitType = "[km]"; break;
                 case LengthTypeEnum.Inches: mXparserValueUnitType = "[inch]"; break;
                 case LengthTypeEnum.Feet: mXparserValueUnitType = "[ft]"; break;
-                default: throw new ArgumentException($"{nameof(LengthTypeEnum)} doesn't support: {toConvertTo}");
+                default: throw new ArgumentException($"{nameof(LengthTypeEnum)} doesn't support: {valueUnitType}");
             }
             convertLength.addArguments(new Argument(valueType, mXparserValueUnitType));
 
