@@ -73,10 +73,13 @@
     </Compile>
     <Compile Include="Helpers\Enums\ConversionTypeEnum.cs" />
     <Compile Include="Helpers\Enums\FileSizeTypeEnum.cs" />
+    <Compile Include="Helpers\Enums\LengthTypeEnum.cs" />
     <Compile Include="Helpers\Enums\TemperatureTypeEnum.cs" />
     <Compile Include="Helpers\Enums\TimeTypeEnum.cs" />
     <Compile Include="Helpers\Enums\NumeralSystemEnum.cs" />
     <Compile Include="Helpers\FileSizeConversion.cs" />
+    <Compile Include="Helpers\IUnitConversion.cs" />
+    <Compile Include="Helpers\LengthConversion.cs" />
     <Compile Include="Helpers\NumeralSystemConversion.cs" />
     <Compile Include="Helpers\TemperatureConversion.cs" />
     <Compile Include="Helpers\TimeConversion.cs" />
