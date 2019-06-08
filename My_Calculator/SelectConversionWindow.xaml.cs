@@ -87,7 +87,7 @@ namespace My_Calculator
                         case ConversionTypeEnum.Weight: break;
                         case ConversionTypeEnum.Length: break;
                         case ConversionTypeEnum.Temperature: OpenConversionWindow<TemperatureConversionWindow>(); break;
-                        case ConversionTypeEnum.FileSize: break;
+                        case ConversionTypeEnum.FileSize: OpenConversionWindow<FileSizeConversionWindow>(); break;
                         case ConversionTypeEnum.Time: OpenConversionWindow<TimeConversionWindow>(); break;
                         default: throw new NotImplementedException("ConversionType is not found");
                     }
