@@ -77,6 +77,7 @@
     <Compile Include="Helpers\Enums\TemperatureTypeEnum.cs" />
     <Compile Include="Helpers\Enums\TimeTypeEnum.cs" />
     <Compile Include="Helpers\Enums\NumeralSystemEnum.cs" />
+    <Compile Include="Helpers\Enums\WeightTypeEnum.cs" />
     <Compile Include="Helpers\FileSizeConversion.cs" />
     <Compile Include="Helpers\IFileSizeConversion.cs" />
     <Compile Include="Helpers\ILengthConversion.cs" />
@@ -84,10 +85,12 @@
     <Compile Include="Helpers\ITemperatureConversion.cs" />
     <Compile Include="Helpers\ITimeConversion.cs" />
     <Compile Include="Helpers\IUnitConversion.cs" />
+    <Compile Include="Helpers\IWeightConversion.cs" />
     <Compile Include="Helpers\LengthConversion.cs" />
     <Compile Include="Helpers\NumeralSystemConversion.cs" />
     <Compile Include="Helpers\TemperatureConversion.cs" />
     <Compile Include="Helpers\TimeConversion.cs" />
+    <Compile Include="Helpers\WeightConversion.cs" />
     <Compile Include="SelectConversionWindow.xaml.cs">
       <DependentUpon>SelectConversionWindow.xaml</DependentUpon>
     </Compile>
