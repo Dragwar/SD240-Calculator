@@ -4,7 +4,7 @@ using org.mariuszgromada.math.mxparser;
 
 namespace My_Calculator.Helpers
 {
-    public class LengthConversion : IUnitConversion<LengthConversion, double, LengthTypeEnum>
+    public class LengthConversion : ILengthConversion, IUnitConversion<LengthConversion, double, LengthTypeEnum>
     {
         public double ValueToConvert { get; private set; }
         public LengthTypeEnum CurrentUnitType { get; private set; }

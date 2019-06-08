@@ -4,33 +4,34 @@ using org.mariuszgromada.math.mxparser;
 
 namespace My_Calculator.Helpers
 {
-    public class FileSizeConversion
+    public class FileSizeConversion : IFileSizeConversion, IUnitConversion<FileSizeConversion, double, FileSizeTypeEnum>
     {
         public double ValueToConvert { get; private set; }
-        public FileSizeTypeEnum CurrentFileSizeType { get; private set; }
+        public FileSizeTypeEnum CurrentUnitType { get; private set; }
 
-        public double Bits => ConvertToFileSizeType(ValueToConvert, CurrentFileSizeType, FileSizeTypeEnum.Bit);
-        public double Bytes => ConvertToFileSizeType(ValueToConvert, CurrentFileSizeType, FileSizeTypeEnum.Bytes);
-        public double Kilobytes => ConvertToFileSizeType(ValueToConvert, CurrentFileSizeType, FileSizeTypeEnum.Kilobytes);
-        public double Megabytes => ConvertToFileSizeType(ValueToConvert, CurrentFileSizeType, FileSizeTypeEnum.Megabytes);
-        public double Gigabytes => ConvertToFileSizeType(ValueToConvert, CurrentFileSizeType, FileSizeTypeEnum.Gigabytes);
-        public double Terabytes => ConvertToFileSizeType(ValueToConvert, CurrentFileSizeType, FileSizeTypeEnum.Terabytes);
-        public double Petabytes => ConvertToFileSizeType(ValueToConvert, CurrentFileSizeType, FileSizeTypeEnum.Petabytes);
+        public double Bits => Convert(ValueToConvert, CurrentUnitType, FileSizeTypeEnum.Bit);
+        public double Bytes => Convert(ValueToConvert, CurrentUnitType, FileSizeTypeEnum.Bytes);
+        public double Kilobytes => Convert(ValueToConvert, CurrentUnitType, FileSizeTypeEnum.Kilobytes);
+        public double Megabytes => Convert(ValueToConvert, CurrentUnitType, FileSizeTypeEnum.Megabytes);
+        public double Gigabytes => Convert(ValueToConvert, CurrentUnitType, FileSizeTypeEnum.Gigabytes);
+        public double Terabytes => Convert(ValueToConvert, CurrentUnitType, FileSizeTypeEnum.Terabytes);
+        public double Petabytes => Convert(ValueToConvert, CurrentUnitType, FileSizeTypeEnum.Petabytes);
+
 
         public FileSizeConversion(double initialValueToConvert, FileSizeTypeEnum currentFileSizeType)
         {
             ValueToConvert = initialValueToConvert;
-            CurrentFileSizeType = currentFileSizeType;
+            CurrentUnitType = currentFileSizeType;
         }
 
         public FileSizeConversion SetValueToConvert(double newValueToConvert, FileSizeTypeEnum newFileSizeType)
         {
             ValueToConvert = newValueToConvert;
-            CurrentFileSizeType = newFileSizeType;
+            CurrentUnitType = newFileSizeType;
             return this;
         }
 
-        public static double ConvertToFileSizeType(double valueToConvert, FileSizeTypeEnum valueToConvertFileSizeType, FileSizeTypeEnum toConvertTo)
+        public double Convert(double valueToConvert, FileSizeTypeEnum valueToConvertFileSizeType, FileSizeTypeEnum toConvertTo)
         {
             if (valueToConvertFileSizeType == toConvertTo)
             {
@@ -54,7 +55,7 @@ namespace My_Calculator.Helpers
                 case FileSizeTypeEnum.Gigabytes: mXparserValueToConvertFileSizeType = "[GB]"; break;
                 case FileSizeTypeEnum.Terabytes: mXparserValueToConvertFileSizeType = "[TB]"; break;
                 case FileSizeTypeEnum.Petabytes: mXparserValueToConvertFileSizeType = "[PB]"; break;
-                default: throw new ArgumentException($"FileSizeTypeEnum doesn't support: {valueToConvertFileSizeType}");
+                default: throw new ArgumentException($"{nameof(FileSizeTypeEnum)} doesn't support: {valueToConvertFileSizeType}");
             }
             convertFileSize.addArguments(new Argument(valueSizeType, mXparserValueToConvertFileSizeType));
 
@@ -68,7 +69,7 @@ namespace My_Calculator.Helpers
                 case FileSizeTypeEnum.Gigabytes: mXparserToConvertToFileSizeType = "[GB]"; break;
                 case FileSizeTypeEnum.Terabytes: mXparserToConvertToFileSizeType = "[TB]"; break;
                 case FileSizeTypeEnum.Petabytes: mXparserToConvertToFileSizeType = "[PB]"; break;
-                default: throw new ArgumentException($"FileSizeTypeEnum doesn't support: {toConvertTo}");
+                default: throw new ArgumentException($"{nameof(FileSizeTypeEnum)} doesn't support: {toConvertTo}");
             }
             convertFileSize.addArguments(new Argument(toSizeType, mXparserToConvertToFileSizeType));
 

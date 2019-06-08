@@ -78,6 +78,11 @@
     <Compile Include="Helpers\Enums\TimeTypeEnum.cs" />
     <Compile Include="Helpers\Enums\NumeralSystemEnum.cs" />
     <Compile Include="Helpers\FileSizeConversion.cs" />
+    <Compile Include="Helpers\IFileSizeConversion.cs" />
+    <Compile Include="Helpers\ILengthConversion.cs" />
+    <Compile Include="Helpers\INumeralSystemConversion.cs" />
+    <Compile Include="Helpers\ITemperatureConversion.cs" />
+    <Compile Include="Helpers\ITimeConversion.cs" />
     <Compile Include="Helpers\IUnitConversion.cs" />
     <Compile Include="Helpers\LengthConversion.cs" />
     <Compile Include="Helpers\NumeralSystemConversion.cs" />

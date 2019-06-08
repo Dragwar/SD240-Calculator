@@ -3,7 +3,7 @@ using My_Calculator.Helpers.Enums;
 
 namespace My_Calculator.Helpers
 {
-    public class NumeralSystemConversion
+    public class NumeralSystemConversion : INumeralSystemConversion
     {
         public int NumberToConvert { get; set; }
         public string Hexadecimal => Convert.ToString(NumberToConvert, 16); // or NumberToConvert.ToString("X");
