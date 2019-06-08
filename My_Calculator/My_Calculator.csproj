@@ -65,6 +65,9 @@
     <Compile Include="ConversionWindows\FileSizeConversionWindow.xaml.cs">
       <DependentUpon>FileSizeConversionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ConversionWindows\LengthConversionWindow.xaml.cs">
+      <DependentUpon>LengthConversionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ConversionWindows\NumeralSystemConversionWindow.xaml.cs">
       <DependentUpon>NumeralSystemConversionWindow.xaml</DependentUpon>
     </Compile>
@@ -135,6 +138,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="ConversionWindows\FileSizeConversionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConversionWindows\LengthConversionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -2,25 +2,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using My_Calculator.Helpers;
 using My_Calculator.Helpers.Enums;
 
 namespace My_Calculator.ConversionWindows
 {
     /// <summary>
-    /// Interaction logic for FileSizeConversionWindow.xaml
+    /// Interaction logic for LengthConversionWindow.xaml
     /// </summary>
-    public partial class FileSizeConversionWindow : Window
+    public partial class LengthConversionWindow : Window
     {
-        private FileSizeConversion FileSizeConversion { get; } = new FileSizeConversion(0, FileSizeTypeEnum.Bit);
+        private LengthConversion LengthConversion { get; } = new LengthConversion(0, LengthTypeEnum.Millimetres);
         private List<string> MainOutput { get; set; } = new List<string>();
 
         public const string ButtonString = "Button";
 
-        public FileSizeConversionWindow()
+        public LengthConversionWindow()
         {
             InitializeComponent();
 
@@ -55,16 +62,15 @@ namespace My_Calculator.ConversionWindows
         {
             MainOutputText.Text = "";
             MainOutput.Clear();
-            BitsCell.Content = "";
-            BytesCell.Content = "";
-            KilobytesCell.Content = "";
-            MegabytesCell.Content = "";
-            GigabytesCell.Content = "";
-            TerabytesCell.Content = "";
-            PetabytesCell.Content = "";
+            MillimetresCell.Content = "";
+            CentimetersCell.Content = "";
+            MetersCell.Content = "";
+            KilometersCell.Content = "";
+            InchesCell.Content = "";
+            FeetCell.Content = "";
         }
-        private void InputControlBackSpace() => RemoveFromMainOutputTextAndUpdate();
 
+        private void InputControlBackSpace() => RemoveFromMainOutputTextAndUpdate();
 
         private void HandleNewOperator(string mathOperator)
         {
@@ -126,15 +132,14 @@ namespace My_Calculator.ConversionWindows
                     string currentFileSizeTypeString = item.Tag as string;
                     try
                     {
-                        FileSizeTypeEnum currentFileSizeType = (FileSizeTypeEnum)Enum.Parse(typeof(FileSizeTypeEnum), currentFileSizeTypeString, true);
-                        FileSizeConversion.SetValueToConvert(currentValue, currentFileSizeType);
-                        BitsCell.Content = FileSizeConversion.Bits;
-                        BytesCell.Content = FileSizeConversion.Bytes;
-                        KilobytesCell.Content = FileSizeConversion.Kilobytes;
-                        MegabytesCell.Content = FileSizeConversion.Megabytes;
-                        GigabytesCell.Content = FileSizeConversion.Gigabytes;
-                        TerabytesCell.Content = FileSizeConversion.Terabytes;
-                        PetabytesCell.Content = FileSizeConversion.Petabytes;
+                        LengthTypeEnum currentLengthType = (LengthTypeEnum)Enum.Parse(typeof(LengthTypeEnum), currentFileSizeTypeString, true);
+                        LengthConversion.SetValueToConvert(currentValue, currentLengthType);
+                        MillimetresCell.Content = LengthConversion.Millimetres;
+                        CentimetersCell.Content = LengthConversion.Centimeters;
+                        MetersCell.Content = LengthConversion.Meters;
+                        KilometersCell.Content = LengthConversion.Kilometers;
+                        InchesCell.Content = LengthConversion.Inches;
+                        FeetCell.Content = LengthConversion.Feet;
                     }
                     catch (OverflowException err)
                     {
@@ -142,7 +147,7 @@ namespace My_Calculator.ConversionWindows
                     }
                     catch (ArgumentException err)
                     {
-                        MessageBox.Show($"The File Size type was not recognized.\n\n{err.Message}", "Invalid Operation", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"The Length type was not recognized.\n\n{err.Message}", "Invalid Operation", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }

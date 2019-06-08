@@ -85,7 +85,7 @@ namespace My_Calculator
 
                         case ConversionTypeEnum.NumeralSystem: OpenConversionWindow<NumeralSystemConversionWindow>(); break;
                         case ConversionTypeEnum.Weight: break;
-                        case ConversionTypeEnum.Length: break;
+                        case ConversionTypeEnum.Length: OpenConversionWindow<LengthConversionWindow>(); break;
                         case ConversionTypeEnum.Temperature: OpenConversionWindow<TemperatureConversionWindow>(); break;
                         case ConversionTypeEnum.FileSize: OpenConversionWindow<FileSizeConversionWindow>(); break;
                         case ConversionTypeEnum.Time: OpenConversionWindow<TimeConversionWindow>(); break;
