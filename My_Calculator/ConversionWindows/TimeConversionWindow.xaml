@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:My_Calculator.ConversionWindows"
         mc:Ignorable="d"
-        Title="TimeConversionWindow"
+        Title="Time Conversion Window"
         Icon="../Icons/Calculator_Icon.png"
         Height="610"
         Width="500"
