@@ -77,6 +77,9 @@
     <Compile Include="ConversionWindows\TimeConversionWindow.xaml.cs">
       <DependentUpon>TimeConversionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ConversionWindows\WeightConversionWindow.xaml.cs">
+      <DependentUpon>WeightConversionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\Enums\ConversionTypeEnum.cs" />
     <Compile Include="Helpers\Enums\FileSizeTypeEnum.cs" />
     <Compile Include="Helpers\Enums\LengthTypeEnum.cs" />
@@ -154,6 +157,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ConversionWindows\TimeConversionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConversionWindows\WeightConversionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
