@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using My_Calculator.Helpers;
 using My_Calculator.Helpers.Enums;
@@ -462,10 +461,7 @@ namespace My_Calculator.ConversionWindows
             SecondaryOutputText.Text = $"{main} to Decimal";
         }
 
-        private void NumeralSystemConversionWindow_Closed(object sender, EventArgs e)
-        {
-            SelectConversionWindow.CloseAllConversionWindowsAndOpenSelectConversionWindow();
-        }
+        private void NumeralSystemConversionWindow_Closed(object sender, EventArgs e) => SelectConversionWindow.CloseAllConversionWindowsAndOpenSelectConversionWindow();
 
         #region Not Implemented Yet
         private void HistoryButton_Click(object sender, RoutedEventArgs e) => MessageBox

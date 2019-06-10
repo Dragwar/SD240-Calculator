@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using My_Calculator.ConversionWindows;
-using My_Calculator.Helpers;
 using My_Calculator.Helpers.Enums;
 
 namespace My_Calculator
